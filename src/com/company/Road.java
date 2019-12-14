@@ -7,15 +7,16 @@ public class Road {
     private Road nextRoad = null;
     private Vehicle[][] roadArray;
     private int roadLength;
+    private TrafficLight trafficLight;
 
     public Road() {
         // Initiates number of road segments
         this.roadLength = randomRoadLength();
+        this.trafficLight = new TrafficLight();
         this.roadArray = new Vehicle[1][roadLength];
     }
 
     public Vehicle getVehicle() {
-
         Vehicle rVehicle = vehicle;
         vehicle = null;
         return rVehicle;
@@ -37,8 +38,8 @@ public class Road {
     }
 
     /*
-        Display road conditions
-         */
+    Display road conditions
+     */
     public void displayRoad() {
         // Display current road
         for (Vehicle[] vehicleArray: roadArray) {
@@ -51,19 +52,6 @@ public class Road {
 
             }
         }
-
-//        // Display next road
-//        System.out.print("_junction_");
-//        for (Vehicle[] vehicleArray: nextRoad.roadArray) {
-//            for (Vehicle vehicle: vehicleArray) {
-//                if (vehicle != null) {
-//                    System.out.print(vehicle.getType() + " | ");
-//                } else {
-//                    System.out.print("_ | ");
-//                }
-//
-//            }
-//        }
     }
 
     /*
@@ -83,17 +71,20 @@ public class Road {
             if (roadArray[0][roadArray[0].length - 1].getPosition() == (roadArray[0].length - 1)) {
                 if (nextRoad != null) {
                     // TODO: Check traffic light
+                    trafficLight.trafficOperator();
+                    if (trafficLight.getTrafficLightColour().equals("Red")) {
 
-                    // Reset vehicle position to 0
-                    roadArray[0][roadArray[0].length - 1].setPosition(0);
-                    // Set next road vehicle
-                    nextRoad.setVehicle(roadArray[0][roadArray[0].length - 1]);
-                    // Destroy car in current road
-                    roadArray[0][roadArray[0].length - 1] = null;
+                    } else if (trafficLight.getTrafficLightColour().equals("Green")){
+                        // Reset vehicle position to 0
+                        roadArray[0][roadArray[0].length - 1].setPosition(0);
+                        // Set next road vehicle
+                        nextRoad.setVehicle(roadArray[0][roadArray[0].length - 1]);
+                        // Destroy car in current road
+                        roadArray[0][roadArray[0].length - 1] = null;
+                    }
 
-//                String type = nextRoad.getVehicle().getType();
-//                System.out.println("NEXT" + type);
-//                vehicle = null;
+
+
                 } else {
                     // No next road, destroy car
                     roadArray[0][roadArray[0].length - 1] = null;
@@ -103,13 +94,29 @@ public class Road {
 
         } catch (Exception e) {
         }
-        for (int i=(this.roadArray[0].length-1);i>0;i--) {
-            this.roadArray[0][i] = this.roadArray[0][i-1];
-            if (this.roadArray[0][i] != null) {
-                this.roadArray[0][i].incPosition();
+        // If car is present in last segment of road, dont replace it
+        if (roadArray[0][roadArray[0].length-1] != null) {
+            for (int i=(roadArray[0].length-2);i>0;i--) {
+                roadArray[0][i] = roadArray[0][i-1];
+                // if vehicle is in current position, increment it's position by 1
+                if (roadArray[0][i] != null) {
+                    roadArray[0][i].incPosition();
+                }
+                roadArray[0][i-1] = null;
             }
+        } else {
+            for (int i=(roadArray[0].length-1);i>0;i--) {
+                // If car is present in last segment of road, dont replace it
 
-            this.roadArray[0][i-1] = null;
+                roadArray[0][i] = roadArray[0][i-1];
+                // if vehicle is in current position, increment it's position by 1
+                if (roadArray[0][i] != null) {
+                    roadArray[0][i].incPosition();
+                }
+
+                roadArray[0][i-1] = null;
+            }
         }
+
     }
 }

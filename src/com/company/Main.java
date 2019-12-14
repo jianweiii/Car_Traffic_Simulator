@@ -21,7 +21,7 @@ public class Main {
 
         System.out.println();
 
-	    for (int i=0;i<(road1.getRoadLength() + road2.getRoadLength() - 2);i++) {
+	    for (int i=0;i<(30);i++) {
             road1.moveVehicle();
             road1.displayRoad();
             System.out.print(" _junction_ ");
