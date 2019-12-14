@@ -8,19 +8,30 @@ public class Main {
 	    Road road1 = new Road();
         Road road2 = new Road();
 
+        road1.setNextRoad(road2);
 
 	    road1.setVehicle(new Vehicle("Car"));
 
-//	    Vehicle vehicle1 = road1.getVehicle();
-//
-//	    Road road2 = new Road();
-//	    road2.setVehicle(vehicle1);
-//	    String type = road2.getVehicle().getType();
-//        System.out.println(type);
-//
-//        System.out.println(road1.getVehicle());
+        System.out.println(road1.getRoadLength());
+        System.out.println(road2.getRoadLength());
 
+        road1.displayRoad();
+        System.out.print(" _junction_ ");
+        road2.displayRoad();
 
+        System.out.println();
 
+	    for (int i=0;i<(road1.getRoadLength() + road2.getRoadLength() - 2);i++) {
+            road1.moveVehicle();
+            road1.displayRoad();
+            System.out.print(" _junction_ ");
+
+            road2.displayRoad();
+            road2.moveVehicle();
+            System.out.println();
+        }
+        road1.displayRoad();
+        System.out.print(" _junction_ ");
+        road2.displayRoad();
     }
 }
