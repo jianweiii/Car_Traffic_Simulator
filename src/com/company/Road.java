@@ -1,19 +1,28 @@
 package com.company;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Road {
+    private int xCoord;
+    private int yCoord;
+    private String direction;
     private Vehicle vehicle;
     private Road nextRoad = null;
     private Vehicle[][] roadArray;
     private int roadLength;
-    private TrafficLight trafficLight;
+    private ArrayList<TrafficLight> trafficLightList = new ArrayList<>();
+//    private TrafficLight trafficLight;
 
-    public Road() {
+    public Road(int roadLength, int startX, int startY, String direction, TrafficLight trafficLight) {
         // Initiates number of road segments
-        this.roadLength = randomRoadLength();
-        this.trafficLight = new TrafficLight();
+        this.xCoord = startX;
+        this.yCoord = startY;
+        this.direction = direction;
+        this.roadLength = roadLength;
         this.roadArray = new Vehicle[1][roadLength];
+//        this.trafficLight = mtrafficLight;
+        this.trafficLightList.add(trafficLight);
     }
 
     public Vehicle getVehicle() {
@@ -33,8 +42,36 @@ public class Road {
         this.nextRoad = nextRoad;
     }
 
+    public Vehicle[][] getRoadArray() {
+        return roadArray;
+    }
+
     public int getRoadLength() {
         return roadLength;
+    }
+
+    public int getxCoord() {
+        return xCoord;
+    }
+
+    public int getyCoord() {
+        return yCoord;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public Road getNextRoad() {
+        return nextRoad;
+    }
+
+    public void setTrafficLight(TrafficLight trafficLight) {
+        this.trafficLightList.add(trafficLight);
+    }
+
+    public ArrayList<TrafficLight> getTrafficLightList() {
+        return trafficLightList;
     }
 
     /*
@@ -53,70 +90,67 @@ public class Road {
             }
         }
     }
-
-    /*
-    Randoms the length of each road
-     */
-    private int randomRoadLength() {
-        return (new Random().nextInt(15-6+1) + 6);
-    }
-
     /*
     Move Vehicle 1 slot up
      */
     public void moveVehicle() {
-
         try {
-            // When vehicle reaches end of road segment
-            if (roadArray[0][roadArray[0].length - 1].getPosition() == (roadArray[0].length - 1)) {
-                if (nextRoad != null) {
-                    // TODO: Check traffic light
-                    trafficLight.trafficOperator();
-                    if (trafficLight.getTrafficLightColour().equals("Red")) {
+            getTrafficLightList().get(0).trafficOperator();
+        } catch (Throwable e) {
 
-                    } else if (trafficLight.getTrafficLightColour().equals("Green")){
-                        // Reset vehicle position to 0
-                        roadArray[0][roadArray[0].length - 1].setPosition(0);
-                        // Set next road vehicle
-                        nextRoad.setVehicle(roadArray[0][roadArray[0].length - 1]);
-                        // Destroy car in current road
+        }
+
+        // move every slot up by 1 location
+        for (int i=(roadArray[0].length-1);i>0;i--) {
+            // Do not allow taking over of vehicles
+            if (roadArray[0][i] != null) {
+                // When vehicle reaches end of road segment
+                if (roadArray[0][roadArray[0].length-1] != null) {
+                    // Check for nextRoad
+                    if (nextRoad != null) {
+//                        // Reset vehicle position to 0
+//                        roadArray[0][roadArray[0].length-1].setPosition(0);
+//                        // Set next road vehicle
+//                        nextRoad.setVehicle(roadArray[0][roadArray[0].length-1]);
+//                        // Destroy car in current road
+//                        roadArray[0][roadArray[0].length - 1] = null;
+                        // Check traffic light condition
+                        if (trafficLightList.get(0).getTrafficLightColour().equals("Red")) {
+                            //Do nothing and wait
+                        } else if (trafficLightList.get(0).getTrafficLightColour().equals("Green")){
+                            // Reset vehicle position to 0
+                            roadArray[0][roadArray[0].length-1].setPosition(0);
+                            // Set next road vehicle
+                            nextRoad.setVehicle(roadArray[0][roadArray[0].length-1]);
+                            // Destroy car in current road
+                            roadArray[0][roadArray[0].length - 1] = null;
+                        }
+                    } else {
                         roadArray[0][roadArray[0].length - 1] = null;
                     }
-
-
-
-                } else {
-                    // No next road, destroy car
-                    roadArray[0][roadArray[0].length - 1] = null;
                 }
-
-            }
-
-        } catch (Exception e) {
-        }
-        // If car is present in last segment of road, dont replace it
-        if (roadArray[0][roadArray[0].length-1] != null) {
-            for (int i=(roadArray[0].length-2);i>0;i--) {
-                roadArray[0][i] = roadArray[0][i-1];
-                // if vehicle is in current position, increment it's position by 1
-                if (roadArray[0][i] != null) {
-                    roadArray[0][i].incPosition();
+            } else {
+                try {
+                    // Do not move vehicle that has just into road (prevents double moving)
+                    if (roadArray[0][i-1].getPosition() != 0) {
+                        roadArray[0][i] = roadArray[0][i-1];
+                        // if vehicle is in current position, increment it's position by 1
+                        if (roadArray[0][i-1] != null) {
+                            roadArray[0][i].incPosition();
+                        }
+                        roadArray[0][i-1] = null;
+                    } else {
+                        // vehicle pos reflects real position on road segment
+                        // eg. 1 = start of road
+                        // eg. 0 = just moved over from another road, to prevent double moving
+                        if (roadArray[0][0] != null && roadArray[0][0].getPosition() == 0) {
+                            roadArray[0][0].incPosition();
+                        }
+                    }
+                } catch (Exception e) {
+//                    System.out.println(e);
                 }
-                roadArray[0][i-1] = null;
-            }
-        } else {
-            for (int i=(roadArray[0].length-1);i>0;i--) {
-                // If car is present in last segment of road, dont replace it
-
-                roadArray[0][i] = roadArray[0][i-1];
-                // if vehicle is in current position, increment it's position by 1
-                if (roadArray[0][i] != null) {
-                    roadArray[0][i].incPosition();
-                }
-
-                roadArray[0][i-1] = null;
             }
         }
-
     }
 }

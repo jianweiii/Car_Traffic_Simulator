@@ -1,5 +1,8 @@
 package com.company;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class Vehicle {
 
     private String type;
@@ -29,5 +32,11 @@ public class Vehicle {
 
     public void incPosition() {
         this.position += 1;
+    }
+
+    public Road selectNextRoad (ArrayList<Road> roadOption) {
+        Random r = new Random();
+        int chosenNumber = r.nextInt(roadOption.size());
+        return roadOption.get(chosenNumber);
     }
 }
