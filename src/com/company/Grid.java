@@ -30,7 +30,9 @@ public class Grid {
         // Create vehicle only at spawn points
         Random rand = new Random();
         int chosenLocation = rand.nextInt(spawnPoints.size());
-        spawnPoints.get(chosenLocation).setVehicle(new Vehicle("Car",1));
+        System.out.println(chosenLocation);
+        Road chosenRoad = spawnPoints.get(chosenLocation);
+        chosenRoad.setVehicle(new Vehicle("Car",1),chosenRoad.getSpawnLocation());
 
     }
 
@@ -81,9 +83,13 @@ public class Grid {
                 } else if (gridMap[i][j] == 0) {
                     System.out.print("|   |");
                 } else if (gridMap[i][j] == 11) {
-                    System.out.print("|---|");
+                    System.out.print("|->-|");
                 } else if (gridMap[i][j] == 12) {
-                    System.out.print("| | |");
+                    System.out.print("|-<-|");
+                } else if (gridMap[i][j] == 21) {
+                    System.out.print("| ^ |");
+                } else if (gridMap[i][j] == 22) {
+                    System.out.print("| v |");
                 } else {
                     System.out.print("|-X-|");
                 }
@@ -102,32 +108,24 @@ public class Grid {
         roadList.add(road);
         // If road is a spawn point, add it to spawnPoints arraylist
         if (road.getSpawnPoint()) {
-            spawnPoints.add((road));
+            spawnPoints.add(road);
         }
 
         int startX = road.getxCoord();
         int startY = road.getyCoord();
         String direction = road.getDirection();
         int roadSegments = road.getRoadLength();
-        if (direction.equals("horizontal-left")) {
-            //Horizontal road
-            for (int i=0;i<roadSegments;i++) {
-                gridMap[startX-1][startY-1-i] = 11;
-            }
-        } else if (direction.equals("horizontal-right")) {
+        if (direction.equals("horizontal")) {
             //Horizontal road
             for (int i=0;i<roadSegments;i++) {
                 gridMap[startX-1][startY-1+i] = 11;
+                gridMap[startX][startY-1+i] = 12;
             }
-        } else if (direction.equals("vertical-down")) {
+        } else if (direction.equals("vertical")) {
             //Vertical road
             for (int i=0;i<roadSegments;i++) {
-                gridMap[startX-1+i][startY-1] = 12;
-            }
-        } else if (direction.equals("vertical-up")) {
-            //Vertical road
-            for (int i=0;i<roadSegments;i++) {
-                gridMap[startX-1-i][startY-1] = 12;
+                gridMap[startX-1-i][startY-1] = 21;
+                gridMap[startX-1-i][startY] = 22;
             }
         }else if (direction.equals("straight")) {
             //Straight intersection
@@ -141,8 +139,8 @@ public class Grid {
         }
     }
 
-    public void setNextRoad(Road road1, Road road2) {
-        road1.setNextRoad(road2);
+    public void setNextRoad(Road curRoad, Road roadStart, Road roadEnd) {
+        curRoad.setNextRoad(roadStart,roadEnd);
     }
 
     public void setIntersectionNextRoad(Intersection intersection1, Road roadNorth, Road roadSouth, Road roadEast, Road roadWest) {
@@ -163,21 +161,15 @@ public class Grid {
             String direction = road.getDirection();
             int roadSegments = road.getRoadLength();
             Vehicle[][] roadArray = road.getRoadArray();
-            if (direction.equals("horizontal-right")) {
+            if (direction.equals("horizontal")) {
                 for (int i=0;i<roadSegments;i++) {
                     vehicleGridMap[startX-1][startY-1+i] = roadArray[0][i];
+                    vehicleGridMap[startX][startY-1+i] = roadArray[1][i];
                 }
-            } else if (direction.equals("horizontal-left")){
-                for (int i=0;i<roadSegments;i++) {
-                    vehicleGridMap[startX-1][startY-1-i] = roadArray[0][i];
-                }
-            } else if (direction.equals("vertical-up")){
+            } else if (direction.equals("vertical")){
                 for (int i=0;i<roadSegments;i++) {
                     vehicleGridMap[startX-1-i][startY-1] = roadArray[0][i];
-                }
-            } else if (direction.equals("vertical-down")){
-                for (int i=0;i<roadSegments;i++) {
-                    vehicleGridMap[startX-1+i][startY-1] = roadArray[0][i];
+                    vehicleGridMap[startX-1-i][startY] = roadArray[1][i];
                 }
             }else {
                 vehicleGridMap[startX-1][startY-1] = road.getVehicle();

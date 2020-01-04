@@ -30,8 +30,8 @@ public class Intersection extends Road {
     }
 
     @Override
-    public void setVehicle(Vehicle vehicle) {
-        super.setVehicle(vehicle);
+    public void setVehicle(Vehicle vehicle, String position) {
+        super.setVehicle(vehicle, position);
         this.vehicle = vehicle;
     }
 
@@ -79,7 +79,15 @@ public class Intersection extends Road {
             // Let vehicle decide which direction he wish to go
             Road roadChoice = vehicle.selectNextRoad(roadOption);
             // Set next road vehicle
-            roadChoice.setVehicle(vehicle);
+            if (roadChoice == nextNorthRoad) {
+                roadChoice.setVehicle(vehicle,"start");
+            } else if (roadChoice == nextEastRoad) {
+                roadChoice.setVehicle(vehicle,"start");
+            } else if (roadChoice == nextSouthRoad) {
+                roadChoice.setVehicle(vehicle,"end");
+            } else if (roadChoice == nextWestRoad) {
+                roadChoice.setVehicle(vehicle,"end");
+            }
             // Destroy car in current road
             vehicle = null;
         }

@@ -9,12 +9,13 @@ import java.util.TimerTask;
 public class Main {
 
     public static void main(String[] args) {
-	    Road road1 = new Road(5,4,3, "horizontal-right", true, new TrafficLight(5));
-	    road1.setSpawnLocation("end");
-//        Road road2 = new Road(5,5,8, "vertical-down", false, new TrafficLight(5));
+	    Road road1 = new Road(5,8,3, "horizontal", true, new TrafficLight(5));
+	    road1.setSpawnLocation("start");
+        Road road2 = new Road(5,7,8, "vertical", true, new TrafficLight(5));
+        road2.setSpawnLocation("end");
 //        Road road3 = new Road(5,4,9,"horizontal-right",false, null);
 //
-//        Intersection intersection1 = new Intersection(1,4,8,"straight", false,null);
+        Intersection intersection1 = new Intersection(1,8,8,"straight", false,null);
 //        intersection1.setPreviousRoad(road1);
 //
 //        Road road4 = new Road(5,10,9,"horizontal-right", false, null);
@@ -33,7 +34,12 @@ public class Main {
         grid.createGrid();
 
         grid.addRoad(road1);
-//        grid.addRoad(road2);
+        grid.addRoad(road2);
+        grid.addRoad(intersection1);
+        grid.setIntersectionNextRoad(intersection1, road2,null,null , road1);
+        grid.setNextRoad(road1,intersection1,null);
+        grid.setNextRoad(road2,null,intersection1);
+
 //        grid.addRoad(road3);
 //        grid.addRoad(intersection1);
 //        grid.addRoad(road4);
@@ -68,15 +74,13 @@ public class Main {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if(i[0] %10 ==0) {
+                if(i[0] % 10 ==0) {
                     grid.createVehicle();
                 }
-                road1.displayRoad();
-                System.out.println();
-//                grid.updateMap();
-//                grid.displayAll();
+                grid.updateMap();
+                grid.displayAll();
                 grid.moveVehicles();
-//                System.out.println();
+                System.out.println();
                 i[0]++;
 
 //                grid.displayAll();
