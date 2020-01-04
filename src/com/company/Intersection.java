@@ -11,9 +11,10 @@ public class Intersection extends Road {
     private Road nextWestRoad = null;
     private ArrayList<Road> roadOption = new ArrayList<>();
 
-    public Intersection(int roadLength, int startX, int startY, String direction, TrafficLight trafficLight) {
-        super(roadLength, startX, startY, direction, trafficLight);
+    public Intersection(int roadLength, int startX, int startY, String direction, Boolean spawnPoint, TrafficLight trafficLight) {
+        super(roadLength, startX, startY, direction, spawnPoint, trafficLight);
     }
+
 
     public Road getPreviousRoad() {
         return previousRoad;
@@ -68,13 +69,14 @@ public class Intersection extends Road {
 //    }
 
     @Override
-    public void moveVehicle() {
-        super.moveVehicle();
+    public void moveVehicleUp() {
+        super.moveVehicleUp();
         if (vehicle != null && vehicle.getPosition() == 0) {
             vehicle.incPosition();
         } else if (vehicle != null && vehicle.getPosition() != 0) {
             // Reset vehicle position to 0
             vehicle.setPosition(1);
+            // Let vehicle decide which direction he wish to go
             Road roadChoice = vehicle.selectNextRoad(roadOption);
             // Set next road vehicle
             roadChoice.setVehicle(vehicle);

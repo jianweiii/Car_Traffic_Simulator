@@ -1,6 +1,7 @@
 package com.company;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Grid {
     private int gridHeight;
@@ -8,9 +9,11 @@ public class Grid {
     private int[][] gridMap;
     private Vehicle[][] vehicleGridMap;
     private ArrayList<Road> roadList;
+    private ArrayList<Road> spawnPoints;
 
     public Grid() {
         this.roadList = new ArrayList<>();
+        this.spawnPoints = new ArrayList<>();
     }
 
     public void setGrid(int gridHeight, int gridWidth) {
@@ -24,7 +27,11 @@ public class Grid {
     }
 
     public void createVehicle() {
-        roadList.get(0).setVehicle(new Vehicle("Car",1));
+        // Create vehicle only at spawn points
+        Random rand = new Random();
+        int chosenLocation = rand.nextInt(spawnPoints.size());
+        spawnPoints.get(chosenLocation).setVehicle(new Vehicle("Car",1));
+
     }
 
     public void displayGrid() {
@@ -72,7 +79,7 @@ public class Grid {
                 if (vehicleGridMap[i][j] != null) {
                     System.out.print("| C |");
                 } else if (gridMap[i][j] == 0) {
-                    System.out.print("     ");
+                    System.out.print("|   |");
                 } else if (gridMap[i][j] == 11) {
                     System.out.print("|---|");
                 } else if (gridMap[i][j] == 12) {
@@ -91,7 +98,13 @@ public class Grid {
 
 
     public void addRoad(Road road) {
+        // Adding roads to roadList
         roadList.add(road);
+        // If road is a spawn point, add it to spawnPoints arraylist
+        if (road.getSpawnPoint()) {
+            spawnPoints.add((road));
+        }
+
         int startX = road.getxCoord();
         int startY = road.getyCoord();
         String direction = road.getDirection();
@@ -178,7 +191,8 @@ public class Grid {
 
     public void moveVehicles() {
         for (Road road: roadList) {
-            road.moveVehicle();
+            road.moveVehicleUp();
+            road.moveVehicleDown();
         }
     }
 }
