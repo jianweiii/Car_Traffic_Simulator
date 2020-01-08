@@ -39,4 +39,9 @@ public class Vehicle {
         int chosenNumber = r.nextInt(roadOption.size());
         return roadOption.get(chosenNumber);
     }
+
+    public Boolean leaveRoad () {
+        Random r = new Random();
+        return r.nextBoolean();
+    }
 }

@@ -75,7 +75,6 @@ public class Grid {
     }
 
     public void displayAll() {
-        System.out.println("road1: " + roadList.get(0).getTrafficLightList().get(0).getTrafficLightColour() + ", road2: " + roadList.get(1).getTrafficLightList().get(0).getTrafficLightColour());
         for (int i=0;i<gridMap.length;i++) {
             for (int j=0;j<gridMap[i].length;j++) {
                 if (vehicleGridMap[i][j] != null) {
@@ -127,16 +126,22 @@ public class Grid {
                 gridMap[startX-1-i][startY-1] = 21;
                 gridMap[startX-1-i][startY] = 22;
             }
-        }else if (direction.equals("straight")) {
-            //Straight intersection
-            gridMap[startX-1][startY-1] = 2;
-        } else if (direction.equals("3-way")) {
-            //3-way intersection
-            gridMap[startX-1][startY-1] = 3;
-        } else if (direction.equals("4-way")) {
-            //4-way intersection
-            gridMap[startX-1][startY-1] = 4;
+        } else {
+            for (int i=0;i<2;i++) {
+                gridMap[startX-1][startY-1+i] = 3;
+                gridMap[startX][startY-1+i] = 3;
+            }
         }
+//        else if (direction.equals("straight")) {
+//            //Straight intersection
+//            gridMap[startX-1][startY-1] = 2;
+//        } else if (direction.equals("3-way")) {
+//            //3-way intersection
+//            gridMap[startX-1][startY-1] = 3;
+//        } else if (direction.equals("4-way")) {
+//            //4-way intersection
+//            gridMap[startX-1][startY-1] = 4;
+//        }
     }
 
     public void setNextRoad(Road curRoad, Road roadStart, Road roadEnd) {
@@ -172,7 +177,17 @@ public class Grid {
                     vehicleGridMap[startX-1-i][startY] = roadArray[1][i];
                 }
             }else {
-                vehicleGridMap[startX-1][startY-1] = road.getVehicle();
+                Intersection roadIntersection = (Intersection) road;
+                Vehicle[] vehicleIntersection = roadIntersection.getIntersectionGrid();
+                //  -------
+                // | 0 | 1 |
+                //  -------
+                // | 3 | 2 |
+                //  -------
+                vehicleGridMap[startX-1][startY-1] = vehicleIntersection[0];
+                vehicleGridMap[startX-1][startY] = vehicleIntersection[1];
+                vehicleGridMap[startX][startY] = vehicleIntersection[2];
+                vehicleGridMap[startX][startY-1] = vehicleIntersection[3];
             }
 
 
@@ -182,6 +197,8 @@ public class Grid {
     }
 
     public void moveVehicles() {
+        System.out.print("road1: " + roadList.get(0).getTrafficLightList().get(0).getTrafficLightColour() + ", road2: " + roadList.get(1).getTrafficLightList().get(0).getTrafficLightColour() + ", ");
+        System.out.print("road3: " + roadList.get(2).getTrafficLightList().get(0).getTrafficLightColour() + ", road4: " + roadList.get(3).getTrafficLightList().get(0).getTrafficLightColour());
         for (Road road: roadList) {
             road.moveVehicleUp();
             road.moveVehicleDown();
