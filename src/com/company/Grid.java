@@ -1,9 +1,13 @@
 package com.company;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Grid {
+public class Grid extends JPanel {
+    final private static int indvGridSize = 20;
+
     private int gridHeight;
     private int gridWidth;
     private int[][] gridMap;
@@ -30,9 +34,61 @@ public class Grid {
         // Create vehicle only at spawn points
         Random rand = new Random();
         int chosenLocation = rand.nextInt(spawnPoints.size());
-        System.out.println(chosenLocation);
         Road chosenRoad = spawnPoints.get(chosenLocation);
         chosenRoad.setVehicle(new Vehicle("Car",1),chosenRoad.getSpawnLocation());
+
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        Graphics2D graphicsSettings = (Graphics2D) g;
+        // get width of JPanel
+        int panelWidth = getWidth();
+        // get height of JPanel
+        int panelHeight = getHeight();
+        // get length of each array box width
+        int xWidth = panelWidth / gridWidth;
+        // get length of each array box height
+        int yHeight = panelHeight / gridHeight;
+        // row
+        for (int row=0;row<gridMap.length;row++) {
+            // column
+            for (int col=0;col<gridMap[row].length;col++) {
+                if (vehicleGridMap[row][col] != null) {
+                    // car
+                    graphicsSettings.setColor(Color.BLACK);
+                } else if (gridMap[row][col] == 0) {
+                    // non-road
+                    graphicsSettings.setColor(Color.GREEN);
+                } else if (gridMap[row][col] == 11) {
+                    // horizontal right
+                    graphicsSettings.setColor(Color.GRAY);
+//                    System.out.print("|->-|");
+                } else if (gridMap[row][col] == 12) {
+                    // horizontal left
+//                    System.out.print("|-<-|");
+                    graphicsSettings.setColor(Color.GRAY);
+                } else if (gridMap[row][col] == 21) {
+                    // vertical up
+//                    System.out.print("| ^ |");
+                    graphicsSettings.setColor(Color.GRAY);
+                } else if (gridMap[row][col] == 22) {
+                    // vertical down
+//                    System.out.print("| v |");
+                    graphicsSettings.setColor(Color.GRAY);
+                } else {
+                    // intersection
+                    graphicsSettings.setColor(Color.GRAY);
+//                    System.out.print("|-X-|");
+                }
+                int x = (row*panelWidth) / gridMap.length;
+                int y = (col*panelHeight) / gridMap[row].length;
+                graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
+            }
+
+        }
+
+        moveVehicles();
 
     }
 
@@ -197,8 +253,8 @@ public class Grid {
     }
 
     public void moveVehicles() {
-        System.out.print("road1: " + roadList.get(0).getTrafficLightList().get(0).getTrafficLightColour() + ", road2: " + roadList.get(1).getTrafficLightList().get(0).getTrafficLightColour() + ", ");
-        System.out.print("road3: " + roadList.get(2).getTrafficLightList().get(0).getTrafficLightColour() + ", road4: " + roadList.get(3).getTrafficLightList().get(0).getTrafficLightColour());
+//        System.out.print("road1: " + roadList.get(0).getTrafficLightList().get(0).getTrafficLightColour() + ", road2: " + roadList.get(1).getTrafficLightList().get(0).getTrafficLightColour() + ", ");
+//        System.out.print("road3: " + roadList.get(2).getTrafficLightList().get(0).getTrafficLightColour() + ", road4: " + roadList.get(3).getTrafficLightList().get(0).getTrafficLightColour());
         for (Road road: roadList) {
             road.moveVehicleUp();
             road.moveVehicleDown();

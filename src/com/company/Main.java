@@ -1,5 +1,6 @@
 package com.company;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Array;
@@ -9,6 +10,25 @@ import java.util.TimerTask;
 public class Main {
 
     public static void main(String[] args) {
+
+//        JFrame jFrame = new JFrame();
+//        jFrame.setSize(1000,1000);
+//        jFrame.setTitle("Car Simulator Traffic");
+//        JButton button,button1, button2, button3,button4;
+//        button = new JButton("left");
+//        button1 = new JButton("right");
+//        button2 = new JButton("top");
+//        button3 = new JButton("bottom");
+//        button4 = new JButton("center");
+////        jFrame.add(button,BorderLayout.WEST);
+////        jFrame.add(button1, BorderLayout.EAST);
+//        jFrame.add(button2, BorderLayout.NORTH);
+//        jFrame.add(button3, BorderLayout.SOUTH);
+////        jFrame.add(button4, BorderLayout.CENTER);
+//
+//        jFrame.setVisible(true);
+//        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 	    Road road1 = new Road(5,8,3, "horizontal", true, new TrafficLight(5));
 	    road1.setSpawnLocation("start");
         Road road2 = new Road(5,7,8, "vertical", true, new TrafficLight(5));
@@ -71,39 +91,25 @@ public class Main {
 //            grid.moveVehicles();
 //            System.out.println();
 //        }
-        final int[] i = {0};
-        int delay = 0;
-        int interval = 2000;
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if(i[0] % 5 ==0) {
-                    grid.createVehicle();
-                }
-                grid.updateMap();
-                grid.displayAll();
-                grid.moveVehicles();
-                System.out.println();
-                i[0]++;
-
+//        final int[] i = {0};
+//        int delay = 0;
+//        int interval = 2000;
+//        Timer timer = new Timer();
+//        timer.scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                if(i[0] % 5 ==0) {
+//                    grid.createVehicle();
+//                }
+//                grid.updateMap();
 //                grid.displayAll();
-            }
-        },delay,interval);
+//                grid.moveVehicles();
+//                System.out.println();
+//                i[0]++;
+//
+////                grid.displayAll();
+//            }
+//        },delay,interval);
 
-    }
-
-    public static void clearConsole() {
-        try {
-            Robot robot = new Robot();
-            robot.keyPress(KeyEvent.VK_ALT);
-            robot.keyPress(KeyEvent.VK_SHIFT);
-            robot.keyPress(KeyEvent.VK_1);
-            robot.keyRelease(KeyEvent.VK_ALT);
-            robot.keyRelease(KeyEvent.VK_SHIFT);
-            robot.keyRelease(KeyEvent.VK_1);
-        } catch (AWTException ex) {
-            ex.printStackTrace(System.err);
-        }
     }
 }
