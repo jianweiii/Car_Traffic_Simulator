@@ -60,6 +60,14 @@ public class Grid extends JPanel {
                 } else if (gridMap[row][col] == 0) {
                     // non-road
                     graphicsSettings.setColor(Color.GREEN);
+                } else if (gridMap[row][col] == 99) {
+                    // Green traffic light
+                    Color trafficGreen = new Color(41, 140, 38);
+                    graphicsSettings.setColor(trafficGreen);
+                } else if (gridMap[row][col] == 95) {
+                    // Red traffic light
+//                    Color trafficGreen = new Color(41, 140, 38);
+                    graphicsSettings.setColor(Color.RED);
                 } else if (gridMap[row][col] == 11) {
                     // horizontal right
                     graphicsSettings.setColor(Color.GRAY);
@@ -81,8 +89,8 @@ public class Grid extends JPanel {
                     graphicsSettings.setColor(Color.GRAY);
 //                    System.out.print("|-X-|");
                 }
-                int x = (row*panelWidth) / gridMap.length;
-                int y = (col*panelHeight) / gridMap[row].length;
+                int x = (col*panelWidth) / gridMap.length;
+                int y = (row*panelHeight) / gridMap[row].length;
                 graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
             }
 
@@ -214,6 +222,7 @@ public class Grid extends JPanel {
 
     /*
     Update positions on where vehicles are on the road
+    Update traffic light colours
      */
     public void updateMap() {
         for (Road road: roadList) {
@@ -227,10 +236,52 @@ public class Grid extends JPanel {
                     vehicleGridMap[startX-1][startY-1+i] = roadArray[0][i];
                     vehicleGridMap[startX][startY-1+i] = roadArray[1][i];
                 }
+                // Update Traffic Light
+                if (road.getTrafficLightList() != null) {
+                    for (TrafficLight trafficLight: road.getTrafficLightList()) {
+                        if (trafficLight.getPos().equals("start")) {
+                            if (trafficLight.getTrafficLightColour().equals("Green")) {
+                                gridMap[startX-2][startY-2+roadSegments] = 99;
+                            } else {
+                                // red light
+                                gridMap[startX-2][startY-2+roadSegments] = 95;
+                            }
+                        } else {
+                            // end pos
+                            if (trafficLight.getTrafficLightColour().equals("Green")) {
+                                gridMap[startX+1][startY-1] = 99;
+                            } else {
+                                // red light
+                                gridMap[startX+1][startY-1] = 95;
+                            }
+                        }
+                    }
+                }
             } else if (direction.equals("vertical")){
                 for (int i=0;i<roadSegments;i++) {
                     vehicleGridMap[startX-1-i][startY-1] = roadArray[0][i];
                     vehicleGridMap[startX-1-i][startY] = roadArray[1][i];
+                }
+                // Update Traffic Light
+                if (road.getTrafficLightList() != null) {
+                    for (TrafficLight trafficLight: road.getTrafficLightList()) {
+                        if (trafficLight.getPos().equals("start")) {
+                            if (trafficLight.getTrafficLightColour().equals("Green")) {
+                                gridMap[startX-roadSegments][startY-2] = 99;
+                            } else {
+                                // red light
+                                gridMap[startX-roadSegments][startY-2] = 95;
+                            }
+                        } else {
+                            // end pos
+                            if (trafficLight.getTrafficLightColour().equals("Green")) {
+                                gridMap[startX-1][startY+1] = 99;
+                            } else {
+                                // red light
+                                gridMap[startX-1][startY+1] = 95;
+                            }
+                        }
+                    }
                 }
             }else {
                 Intersection roadIntersection = (Intersection) road;
@@ -245,11 +296,7 @@ public class Grid extends JPanel {
                 vehicleGridMap[startX][startY] = vehicleIntersection[2];
                 vehicleGridMap[startX][startY-1] = vehicleIntersection[3];
             }
-
-
-
         }
-
     }
 
     public void moveVehicles() {

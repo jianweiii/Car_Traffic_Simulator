@@ -14,8 +14,8 @@ public class Intersection extends Road {
     private Vehicle[] intersectionGrid;
     private ArrayList<Road> roadOption = new ArrayList<>();
 
-    public Intersection(int roadLength, int startX, int startY, String direction, Boolean spawnPoint, TrafficLight trafficLight) {
-        super(roadLength, startX, startY, direction, spawnPoint, trafficLight);
+    public Intersection(int roadLength, int startX, int startY, String direction, Boolean spawnPoint) {
+        super(roadLength, startX, startY, direction, spawnPoint);
         this.intersectionGrid = new Vehicle[4];
     }
 

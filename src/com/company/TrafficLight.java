@@ -5,12 +5,17 @@ import java.util.Random;
 public class TrafficLight {
     private String trafficLightColour;
     private double rateOfChange;
-    private int pos;
+    private String pos;
+    private int counter = 0;
 
-    public TrafficLight(int pos) {
+    public TrafficLight(String pos) {
         this.trafficLightColour = "Green";
-        this.rateOfChange = 0.3;
+        this.rateOfChange = 0.5;
         this.pos = pos;
+    }
+
+    public String getPos() {
+        return pos;
     }
 
     public String getTrafficLightColour() {
@@ -18,12 +23,18 @@ public class TrafficLight {
     }
 
     public void trafficOperator() {
-        Random random = new Random();
-        if (random.nextDouble() < 0.3) {
-            if (trafficLightColour.equals("Green")) {
-                trafficLightColour = "Red";
-            } else {
-                trafficLightColour = "Green";
+        if (counter <= 3) {
+            counter++;
+        } else {
+            Random random = new Random();
+            if (random.nextDouble() < rateOfChange) {
+                if (trafficLightColour.equals("Green")) {
+                    trafficLightColour = "Red";
+                    counter = 0;
+                } else {
+                    trafficLightColour = "Green";
+                    counter = 0;
+                }
             }
         }
     }

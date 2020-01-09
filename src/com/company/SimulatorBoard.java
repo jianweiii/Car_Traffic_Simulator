@@ -23,7 +23,7 @@ public class SimulatorBoard extends JFrame {
         SimulatorBoard simulatorBoard = new SimulatorBoard();
     }
 
-    public SimulatorBoard() {
+    private SimulatorBoard() {
         this.setSize(boardWidth, boardHeight);
         this.setTitle("Car Traffic Simulator");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,15 +92,19 @@ public class SimulatorBoard extends JFrame {
         grid = new Grid();
         grid.setGrid(20,20);
         grid.createGrid();
-        Road road1 = new Road(5,8,3, "horizontal", true, new TrafficLight(5));
+        Road road1 = new Road(5,8,3, "horizontal", true);
         road1.setSpawnLocation("start");
-        Road road2 = new Road(5,7,8, "vertical", true, new TrafficLight(5));
+        road1.setTrafficLight( new TrafficLight("start"));
+        Road road2 = new Road(5,7,8, "vertical", true);
+        road2.setTrafficLight( new TrafficLight("end"));
         road2.setSpawnLocation("end");
-        Road road3 = new Road(5,8,10,"horizontal",true, new TrafficLight(5));
+        Road road3 = new Road(5,8,10,"horizontal",true);
         road3.setSpawnLocation("end");
-        Road road4 = new Road(5,14,8,"vertical", true, new TrafficLight(5));
+        road3.setTrafficLight( new TrafficLight("end"));
+        Road road4 = new Road(5,14,8,"vertical", true);
         road4.setSpawnLocation("start");
-        Intersection intersection1 = new Intersection(1,8,8,"straight", false,null);
+        road4.setTrafficLight( new TrafficLight("start"));
+        Intersection intersection1 = new Intersection(1,8,8,"straight", false);
 
         grid.addRoad(road1);
         grid.addRoad(road2);
