@@ -41,6 +41,9 @@ public class Vehicle {
     }
 
     public Boolean leaveRoad () {
+        if (position == 3) {
+            return true;
+        }
         Random r = new Random();
         return r.nextBoolean();
     }

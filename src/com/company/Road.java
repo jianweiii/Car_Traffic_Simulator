@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Road {
-    private int xCoord;
-    private int yCoord;
+    private int xCoord, xRTpos;
+    private int yCoord, yRTpos;
     private String direction;
     private Vehicle vehicle;
     private Road curRoad = null;
@@ -48,8 +48,17 @@ public class Road {
     /*
         Set adjacent road
          */
+
     public void setNextRoad(Road nextStartRoad, Road nextEndRoad) {
         this.nextStartRoad = nextStartRoad;
+        this.nextEndRoad = nextEndRoad;
+    }
+
+    public void setNextStartRoad(Road nextStartRoad) {
+        this.nextStartRoad = nextStartRoad;
+    }
+
+    public void setNextEndRoad(Road nextEndRoad) {
         this.nextEndRoad = nextEndRoad;
     }
 
@@ -135,57 +144,68 @@ public class Road {
                 if (roadArray[0][roadArray[0].length-1] != null) {
                     // Check for nextRoad
                     if (nextStartRoad != null) {
-                        // Check for correct traffic light
-                        for (TrafficLight trafficLight: trafficLightList) {
-                            if (trafficLight.getPos().equals("start")) {
-                                // Check traffic light condition
-                                if (trafficLight.getTrafficLightColour().equals("Red")) {
-                                    //Do nothing and wait
-                                } else if (trafficLight.getTrafficLightColour().equals("Green")){
-                                    // If nextStartRoad is an Intersection class, make it an Intersection class
-                                    if (nextStartRoad.getClass() == Intersection.class) {
-                                        Intersection nextIntersection = (Intersection) nextStartRoad;
-                                        Vehicle[] intersectionVehicles = nextIntersection.getIntersectionGrid();
-                                        // Check with respect to which position of the
-                                        // intersection, the current road is connected to
-                                        if (nextIntersection.getNextWestRoad() == this) {
-                                            // check if next intersection point is occupied
-                                            // and also check if any in-coming vehicle onto next intersection point
-                                            if (intersectionVehicles[0] == null && intersectionVehicles[3] == null) {
+                        // Check if there is traffic light
+                        if (!trafficLightList.isEmpty()) {
+                            // Check for correct traffic light
+                            for (TrafficLight trafficLight: trafficLightList) {
+                                if (trafficLight.getPos().equals("start")) {
+                                    // Check traffic light condition
+                                    if (trafficLight.getTrafficLightColour().equals("Red")) {
+                                        //Do nothing and wait
+                                    } else if (trafficLight.getTrafficLightColour().equals("Green")){
+                                        // If nextStartRoad is an Intersection class, make it an Intersection class
+                                        if (nextStartRoad.getClass() == Intersection.class) {
+                                            Intersection nextIntersection = (Intersection) nextStartRoad;
+                                            Vehicle[] intersectionVehicles = nextIntersection.getIntersectionGrid();
+                                            // Check with respect to which position of the
+                                            // intersection, the current road is connected to
+                                            if (nextIntersection.getNextWestRoad() == this) {
+                                                // check if next intersection point is occupied
+                                                // and also check if any in-coming vehicle onto next intersection point
+                                                if (intersectionVehicles[0] == null && intersectionVehicles[3] == null) {
+                                                    // Reset vehicle position to 0
+                                                    roadArray[0][roadArray[0].length-1].setPosition(0);
+                                                    // Set next road vehicle
+                                                    nextStartRoad.setVehicle(roadArray[0][roadArray[0].length-1], "0");
+                                                    // Destroy car in current road
+                                                    roadArray[0][roadArray[0].length - 1] = null;
+                                                } else {
+                                                    // Do nothing
+                                                }
+                                            } else if (nextIntersection.getNextSouthRoad() == this) {
+                                                // check if next intersection point is occupied
+                                                // and also check if any in-coming vehicle onto next intersection point
+                                                if (intersectionVehicles[3] == null && intersectionVehicles[2] == null) {
+                                                    // Reset vehicle position to 0
+                                                    roadArray[0][roadArray[0].length-1].setPosition(0);
+                                                    // Set next road vehicle
+                                                    nextStartRoad.setVehicle(roadArray[0][roadArray[0].length-1], "3");
+                                                    // Destroy car in current road
+                                                    roadArray[0][roadArray[0].length - 1] = null;
+                                                } else {
+                                                    // Do nothing
+                                                }
+                                            } else {
                                                 // Reset vehicle position to 0
                                                 roadArray[0][roadArray[0].length-1].setPosition(0);
                                                 // Set next road vehicle
-                                                nextStartRoad.setVehicle(roadArray[0][roadArray[0].length-1], "0");
+                                                nextStartRoad.setVehicle(roadArray[0][roadArray[0].length-1], "start");
                                                 // Destroy car in current road
                                                 roadArray[0][roadArray[0].length - 1] = null;
-                                            } else {
-                                                // Do nothing
                                             }
-                                        } else if (nextIntersection.getNextSouthRoad() == this) {
-                                            // check if next intersection point is occupied
-                                            // and also check if any in-coming vehicle onto next intersection point
-                                            if (intersectionVehicles[3] == null && intersectionVehicles[2] == null) {
-                                                // Reset vehicle position to 0
-                                                roadArray[0][roadArray[0].length-1].setPosition(0);
-                                                // Set next road vehicle
-                                                nextStartRoad.setVehicle(roadArray[0][roadArray[0].length-1], "3");
-                                                // Destroy car in current road
-                                                roadArray[0][roadArray[0].length - 1] = null;
-                                            } else {
-                                                // Do nothing
-                                            }
-                                        } else {
-                                            // Reset vehicle position to 0
-                                            roadArray[0][roadArray[0].length-1].setPosition(0);
-                                            // Set next road vehicle
-                                            nextStartRoad.setVehicle(roadArray[0][roadArray[0].length-1], "start");
-                                            // Destroy car in current road
-                                            roadArray[0][roadArray[0].length - 1] = null;
                                         }
-                                    }
 
+                                    }
                                 }
                             }
+                        } else {
+                            // For straight road, no traffic lights
+                            // Reset vehicle position to 0
+                            roadArray[0][roadArray[0].length-1].setPosition(0);
+                            // Set next road vehicle
+                            nextStartRoad.setVehicle(roadArray[0][roadArray[0].length-1], "start");
+                            // Destroy car in current road
+                            roadArray[0][roadArray[0].length - 1] = null;
                         }
                     } else {
                         roadArray[0][roadArray[0].length - 1] = null;
@@ -234,57 +254,69 @@ public class Road {
                 if (roadArray[1][0] != null) {
                     // Check for nextRoad
                     if (nextEndRoad != null) {
-                        // Check for correct traffic light
-                        for (TrafficLight trafficLight: trafficLightList) {
-                            if (trafficLight.getPos().equals("end")) {
-                                // Check traffic light condition
-                                if (trafficLight.getTrafficLightColour().equals("Red")) {
-                                    //Do nothing and wait
-                                } else if (trafficLight.getTrafficLightColour().equals("Green")){
-                                    // If nextEndRoad is an Intersection class, make it an Intersection class
-                                    if (nextEndRoad.getClass() == Intersection.class) {
-                                        Intersection nextIntersection = (Intersection) nextEndRoad;
-                                        Vehicle[] intersectionVehicles = nextIntersection.getIntersectionGrid();
-                                        // Check with respect to which position of the
-                                        // intersection, the current road is connected to
-                                        if (nextIntersection.getNextNorthRoad() == this) {
-                                            // check if next intersection point is occupied
-                                            // and also check if any in-coming vehicle onto next intersection point
-                                            if (intersectionVehicles[1] == null && intersectionVehicles[0] == null) {
+                        // Check if there is traffic light
+                        if (!trafficLightList.isEmpty()) {
+                            // Check for correct traffic light
+                            for (TrafficLight trafficLight: trafficLightList) {
+                                if (trafficLight.getPos().equals("end")) {
+                                    // Check traffic light condition
+                                    if (trafficLight.getTrafficLightColour().equals("Red")) {
+                                        //Do nothing and wait
+                                    } else if (trafficLight.getTrafficLightColour().equals("Green")){
+                                        // If nextEndRoad is an Intersection class, make it an Intersection class
+                                        if (nextEndRoad.getClass() == Intersection.class) {
+                                            Intersection nextIntersection = (Intersection) nextEndRoad;
+                                            Vehicle[] intersectionVehicles = nextIntersection.getIntersectionGrid();
+                                            // Check with respect to which position of the
+                                            // intersection, the current road is connected to
+                                            if (nextIntersection.getNextNorthRoad() == this) {
+                                                // check if next intersection point is occupied
+                                                // and also check if any in-coming vehicle onto next intersection point
+                                                if (intersectionVehicles[1] == null && intersectionVehicles[0] == null) {
+                                                    // Reset vehicle position to 0
+                                                    roadArray[1][0].setPosition(0);
+                                                    // Set next road vehicle
+                                                    nextEndRoad.setVehicle(roadArray[1][0],"1");
+                                                    // Destroy car in current road
+                                                    roadArray[1][0] = null;
+                                                } else {
+                                                    // Do nothing
+                                                }
+                                            } else if (nextIntersection.getNextEastRoad() == this) {
+                                                // check if next intersection point is occupied
+                                                // and also check if any in-coming vehicle onto next intersection point
+                                                if (intersectionVehicles[2] == null && intersectionVehicles[1] == null) {
+                                                    // Reset vehicle position to 0
+                                                    roadArray[1][0].setPosition(0);
+                                                    // Set next road vehicle
+                                                    nextEndRoad.setVehicle(roadArray[1][0],"2");
+                                                    // Destroy car in current road
+                                                    roadArray[1][0] = null;
+                                                } else {
+                                                    // Do nothing
+                                                }
+                                            } else {
                                                 // Reset vehicle position to 0
                                                 roadArray[1][0].setPosition(0);
                                                 // Set next road vehicle
-                                                nextEndRoad.setVehicle(roadArray[1][0],"1");
+                                                nextEndRoad.setVehicle(roadArray[1][0],"end");
                                                 // Destroy car in current road
                                                 roadArray[1][0] = null;
-                                            } else {
-                                                // Do nothing
                                             }
-                                        } else if (nextIntersection.getNextEastRoad() == this) {
-                                            // check if next intersection point is occupied
-                                            // and also check if any in-coming vehicle onto next intersection point
-                                            if (intersectionVehicles[2] == null && intersectionVehicles[1] == null) {
-                                                // Reset vehicle position to 0
-                                                roadArray[1][0].setPosition(0);
-                                                // Set next road vehicle
-                                                nextEndRoad.setVehicle(roadArray[1][0],"2");
-                                                // Destroy car in current road
-                                                roadArray[1][0] = null;
-                                            } else {
-                                                // Do nothing
-                                            }
-                                        } else {
-                                            // Reset vehicle position to 0
-                                            roadArray[1][0].setPosition(0);
-                                            // Set next road vehicle
-                                            nextEndRoad.setVehicle(roadArray[1][0],"end");
-                                            // Destroy car in current road
-                                            roadArray[1][0] = null;
                                         }
                                     }
                                 }
                             }
+                        } else // for straight roads
+                            {
+                            // Reset vehicle position to 0
+                            roadArray[1][0].setPosition(0);
+                            // Set next road vehicle
+                            nextEndRoad.setVehicle(roadArray[1][0],"end");
+                            // Destroy car in current road
+                            roadArray[1][0] = null;
                         }
+
                     } else {
                         // Destroy car if no further roads
                         roadArray[1][0] = null;
@@ -319,5 +351,23 @@ public class Road {
                 }
             }
         }
+    }
+
+    public int getxRTpos() {
+        if (direction.equals("horizontal")) {
+            xRTpos = xCoord;
+        } else if (direction.equals("vertical")) {
+            xRTpos = xCoord-roadLength;
+        }
+        return xRTpos;
+    }
+
+    public int getyRTpos() {
+        if (direction.equals("horizontal")) {
+            yRTpos = yCoord+roadLength;
+        } else if (direction.equals("vertical")) {
+            yRTpos = xCoord+1;
+        }
+        return yRTpos;
     }
 }

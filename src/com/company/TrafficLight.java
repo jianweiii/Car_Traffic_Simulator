@@ -23,7 +23,7 @@ public class TrafficLight {
     }
 
     public void trafficOperator() {
-        if (counter <= 3) {
+        if (counter <= 4) {
             counter++;
         } else {
             Random random = new Random();

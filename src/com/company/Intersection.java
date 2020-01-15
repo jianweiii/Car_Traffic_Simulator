@@ -156,6 +156,7 @@ public class Intersection extends Road {
                         // As long as car position is not 0, move it
                         //Shift element of array by one
                         intersectionGrid[i] = intersectionGrid[i-1];
+                        intersectionGrid[i].incPosition();
                         // Destroy car
                         intersectionGrid[i-1] = null;
                     }
@@ -174,6 +175,7 @@ public class Intersection extends Road {
                     // As long as car position is not 0, move it
                     //Last element of array will be added to the start of array.
                     intersectionGrid[0] = temp;
+                    intersectionGrid[0].incPosition();
                     // If vehicle at pos 3 is same as pos 1, destroy the car at pos 3
                     if (intersectionGrid[0] == intersectionGrid[3]) {
                         intersectionGrid[3] = null;

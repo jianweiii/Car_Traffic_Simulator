@@ -15,17 +15,12 @@ public class Grid extends JPanel {
     private ArrayList<Road> roadList;
     private ArrayList<Road> spawnPoints;
 
-    public Grid() {
+    public Grid(int gridHeight, int gridWidth) {
         this.roadList = new ArrayList<>();
         this.spawnPoints = new ArrayList<>();
-    }
-
-    public void setGrid(int gridHeight, int gridWidth) {
         this.gridHeight = gridHeight;
         this.gridWidth = gridWidth;
-    }
 
-    public void createGrid() {
         this.gridMap = new int[gridHeight][gridWidth];
         this.vehicleGridMap = new Vehicle[gridHeight][gridWidth];
     }
