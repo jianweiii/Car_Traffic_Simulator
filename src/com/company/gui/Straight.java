@@ -1,7 +1,6 @@
-package com.company;
+package com.company.gui;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 

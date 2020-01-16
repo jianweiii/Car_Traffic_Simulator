@@ -1,8 +1,12 @@
 package com.company;
 
+import com.company.gui.FourWay;
+import com.company.gui.Straight;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AddNewLayout extends JPanel {
     private int gridHeight, gridWidth;
@@ -22,25 +26,32 @@ public class AddNewLayout extends JPanel {
         Graphics2D graphicsSettings = (Graphics2D) g;
 
         // Reset Grid
-        this.gridMap = new int[gridHeight][gridWidth];
+        for( int row=0; row < gridMap.length; row++ ) {
+            for (int col=0; col < gridMap[row].length; col++) {
+                gridMap[row][col] = 0;
+            }
+        }
+
 
         for (Component component: componentsArray) {
             if (component.getClass() == Straight.class) {
-                Straight straight = (Straight) component;
-                int xStraight = straight.getxPos();
-                int yStraight = straight.getyPos();
-                int lengthStraight = straight.getLength();
-                if (straight.getDirection().equals("horizontal")){
-                    for (int row=0;row<2;row++) {
-                        for (int col=0;col<lengthStraight;col++) {
-                            gridMap[xStraight + row][yStraight + col] = 22;
-                        }
+                updateStraightComponent(component);
+            }
+
+            if (component.getClass() == FourWay.class) {
+                FourWay fourWay = (FourWay) component;
+                int xStartFourWay = fourWay.getxPos();
+                int yStartFourWay = fourWay.getyPos();
+
+                for (int row=0;row<2;row++) {
+                    for (int col=0;col<6;col++) {
+                        gridMap[xStartFourWay+row][yStartFourWay+col] = 22;
                     }
-                } else if (straight.getDirection().equals("vertical")){
-                    for (int row=0;row<2;row++) {
-                        for (int col=0;col<lengthStraight;col++) {
-                            gridMap[xStraight - col][yStraight + row] = 22;
-                        }
+                }
+
+                for (int row=0;row<6;row++) {
+                    for (int col=0;col<2;col++) {
+                        gridMap[xStartFourWay+3-row][yStartFourWay+2+col] = 22;
                     }
                 }
             }
@@ -86,5 +97,29 @@ public class AddNewLayout extends JPanel {
 
     public ArrayList<Component> getComponentsArray() {
         return componentsArray;
+    }
+
+    public void clear() {
+        componentsArray.clear();
+    }
+
+    private void updateStraightComponent(Component component) {
+        Straight straight = (Straight) component;
+        int xStraight = straight.getxPos();
+        int yStraight = straight.getyPos();
+        int lengthStraight = straight.getLength();
+        if (straight.getDirection().equals("horizontal")){
+            for (int row=0;row<2;row++) {
+                for (int col=0;col<lengthStraight;col++) {
+                    gridMap[xStraight + row][yStraight + col] = 22;
+                }
+            }
+        } else if (straight.getDirection().equals("vertical")){
+            for (int row=0;row<2;row++) {
+                for (int col=0;col<lengthStraight;col++) {
+                    gridMap[xStraight - col][yStraight + row] = 22;
+                }
+            }
+        }
     }
 }

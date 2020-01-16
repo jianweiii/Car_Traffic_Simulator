@@ -148,7 +148,7 @@ public class Road {
                         if (!trafficLightList.isEmpty()) {
                             // Check for correct traffic light
                             for (TrafficLight trafficLight: trafficLightList) {
-                                if (trafficLight.getPos().equals("start")) {
+                                if (trafficLight.getPos() == i) {
                                     // Check traffic light condition
                                     if (trafficLight.getTrafficLightColour().equals("Red")) {
                                         //Do nothing and wait
@@ -194,18 +194,41 @@ public class Road {
                                                 roadArray[0][roadArray[0].length - 1] = null;
                                             }
                                         }
-
+                                    }
+                                }
+                                else
+                                {
+                                    // check if theres a vehicle in next road
+                                    if (nextStartRoad.getRoadArray()[0][0] != null) {
+                                        // Do nothing
+                                    } else {
+                                        // For straight road, no traffic lights
+                                        // Reset vehicle position to 0
+                                        roadArray[0][roadArray[0].length-1].setPosition(0);
+                                        // Set next road vehicle
+                                        nextStartRoad.setVehicle(roadArray[0][roadArray[0].length-1], "start");
+                                        // Destroy car in current road
+                                        roadArray[0][roadArray[0].length - 1] = null;
                                     }
                                 }
                             }
-                        } else {
-                            // For straight road, no traffic lights
-                            // Reset vehicle position to 0
-                            roadArray[0][roadArray[0].length-1].setPosition(0);
-                            // Set next road vehicle
-                            nextStartRoad.setVehicle(roadArray[0][roadArray[0].length-1], "start");
-                            // Destroy car in current road
-                            roadArray[0][roadArray[0].length - 1] = null;
+                        } else
+                            // No traffic light
+                            {
+                            // check if theres a vehicle in next road
+                            if (nextStartRoad.getRoadArray()[0][0] != null) {
+                                // Do nothing
+                            } else {
+                                // For straight road, no traffic lights
+                                // Reset vehicle position to 0
+                                roadArray[0][roadArray[0].length-1].setPosition(0);
+                                // Set next road vehicle
+                                nextStartRoad.setVehicle(roadArray[0][roadArray[0].length-1], "start");
+                                // Destroy car in current road
+                                roadArray[0][roadArray[0].length - 1] = null;
+
+                            }
+
                         }
                     } else {
                         roadArray[0][roadArray[0].length - 1] = null;
@@ -258,7 +281,7 @@ public class Road {
                         if (!trafficLightList.isEmpty()) {
                             // Check for correct traffic light
                             for (TrafficLight trafficLight: trafficLightList) {
-                                if (trafficLight.getPos().equals("end")) {
+                                if (trafficLight.getPos() == 0) {
                                     // Check traffic light condition
                                     if (trafficLight.getTrafficLightColour().equals("Red")) {
                                         //Do nothing and wait
@@ -306,15 +329,36 @@ public class Road {
                                         }
                                     }
                                 }
+                                else
+                                    // No traffic light
+                                    {
+                                    // check if theres a vehicle in next road
+                                    if (nextEndRoad.getRoadArray()[1][nextEndRoad.getRoadLength()-1] != null) {
+                                        // Do nothing
+                                    } else {
+                                        // Reset vehicle position to 0
+                                        roadArray[1][0].setPosition(0);
+                                        // Set next road vehicle
+                                        nextEndRoad.setVehicle(roadArray[1][0],"end");
+                                        // Destroy car in current road
+                                        roadArray[1][0] = null;
+                                    }
+                                }
                             }
                         } else // for straight roads
-                            {
-                            // Reset vehicle position to 0
-                            roadArray[1][0].setPosition(0);
-                            // Set next road vehicle
-                            nextEndRoad.setVehicle(roadArray[1][0],"end");
-                            // Destroy car in current road
-                            roadArray[1][0] = null;
+                        {
+                            // check if theres a vehicle in next road
+                            if (nextEndRoad.getRoadArray()[1][nextEndRoad.getRoadLength()-1] != null) {
+                                // Do nothing
+                            } else {
+                                // Reset vehicle position to 0
+                                roadArray[1][0].setPosition(0);
+                                // Set next road vehicle
+                                nextEndRoad.setVehicle(roadArray[1][0],"end");
+                                // Destroy car in current road
+                                roadArray[1][0] = null;
+                            }
+
                         }
 
                     } else {
@@ -324,28 +368,28 @@ public class Road {
                 }
             } else {
                 try {
-                    roadArray[1][i] = roadArray[1][i+1];
-                    // if vehicle is in current position, increment it's position by 1
-                    if (roadArray[1][i+1] != null) {
-                        roadArray[1][i].incPosition();
-                    }
-                    roadArray[1][i+1] = null;
-//                    // Do not move vehicle that has just into road (prevents double moving)
-//                    if (roadArray[1][i+1].getPosition() != 0) {
-//                        roadArray[1][i] = roadArray[1][i+1];
-//                        // if vehicle is in current position, increment it's position by 1
-//                        if (roadArray[1][i+1] != null) {
-//                            roadArray[1][i].incPosition();
-//                        }
-//                        roadArray[1][i+1] = null;
-//                    } else {
-//                        // vehicle pos reflects real position on road segment
-//                        // eg. 1 = start of road
-//                        // eg. 0 = just moved over from another road, to prevent double moving
-//                        if (roadArray[1][roadArray[1].length-1] != null && roadArray[1][roadArray[1].length-1].getPosition() == 0) {
-//                            roadArray[1][roadArray[1].length-1].incPosition();
-//                        }
+//                    roadArray[1][i] = roadArray[1][i+1];
+//                    // if vehicle is in current position, increment it's position by 1
+//                    if (roadArray[1][i+1] != null) {
+//                        roadArray[1][i].incPosition();
 //                    }
+//                    roadArray[1][i+1] = null;
+                    // Do not move vehicle that has just into road (prevents double moving)
+                    if (roadArray[1][i+1].getPosition() != 0) {
+                        roadArray[1][i] = roadArray[1][i+1];
+                        // if vehicle is in current position, increment it's position by 1
+                        if (roadArray[1][i+1] != null) {
+                            roadArray[1][i].incPosition();
+                        }
+                        roadArray[1][i+1] = null;
+                    } else {
+                        // vehicle pos reflects real position on road segment
+                        // eg. 1 = start of road
+                        // eg. 0 = just moved over from another road, to prevent double moving
+                        if (roadArray[1][roadArray[1].length-1] != null && roadArray[1][roadArray[1].length-1].getPosition() == 0) {
+                            roadArray[1][roadArray[1].length-1].incPosition();
+                        }
+                    }
                 } catch (Exception e) {
 //                    System.out.println(e);
                 }
@@ -357,7 +401,7 @@ public class Road {
         if (direction.equals("horizontal")) {
             xRTpos = xCoord;
         } else if (direction.equals("vertical")) {
-            xRTpos = xCoord-roadLength;
+            xRTpos = xCoord-roadLength+1;
         }
         return xRTpos;
     }
@@ -366,7 +410,7 @@ public class Road {
         if (direction.equals("horizontal")) {
             yRTpos = yCoord+roadLength;
         } else if (direction.equals("vertical")) {
-            yRTpos = xCoord+1;
+            yRTpos = yCoord;
         }
         return yRTpos;
     }

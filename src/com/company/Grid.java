@@ -86,7 +86,10 @@ public class Grid extends JPanel {
                 }
                 int x = (col*panelWidth) / gridMap.length;
                 int y = (row*panelHeight) / gridMap[row].length;
-                graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
+
+                // TODO: CHAGNE BACK
+//                graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
+                graphicsSettings.fillRect(x-1,y-1,xWidth-1,yHeight-1);
             }
 
         }
@@ -234,7 +237,7 @@ public class Grid extends JPanel {
                 // Update Traffic Light
                 if (road.getTrafficLightList() != null) {
                     for (TrafficLight trafficLight: road.getTrafficLightList()) {
-                        if (trafficLight.getPos().equals("start")) {
+                        if (trafficLight.getPrintPos().equals("start")) {
                             if (trafficLight.getTrafficLightColour().equals("Green")) {
                                 gridMap[startX-2][startY-2+roadSegments] = 99;
                             } else {
@@ -260,7 +263,7 @@ public class Grid extends JPanel {
                 // Update Traffic Light
                 if (road.getTrafficLightList() != null) {
                     for (TrafficLight trafficLight: road.getTrafficLightList()) {
-                        if (trafficLight.getPos().equals("start")) {
+                        if (trafficLight.getPrintPos().equals("start")) {
                             if (trafficLight.getTrafficLightColour().equals("Green")) {
                                 gridMap[startX-roadSegments][startY-2] = 99;
                             } else {

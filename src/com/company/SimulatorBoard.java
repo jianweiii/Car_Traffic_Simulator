@@ -1,5 +1,8 @@
 package com.company;
 
+import com.company.gui.FourWay;
+import com.company.gui.Straight;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -123,10 +126,6 @@ public class SimulatorBoard extends JFrame {
         // Where all the main center layout
         this.add(mainActivity(),BorderLayout.CENTER);
 
-
-
-
-
         this.setVisible(true);
 
     }
@@ -140,7 +139,7 @@ public class SimulatorBoard extends JFrame {
 
         @Override
         public void run() {
-            if (counter % 10 == 0) {
+            if (counter % 5 == 0) {
                 grid.createVehicle();
             }
             grid.updateMap();
@@ -207,7 +206,7 @@ public class SimulatorBoard extends JFrame {
                 } else {
                     addRoadCard.show(switchPanel,"addRoad");
                     mainCard.show(mainActivityLayout,"addLayout");
-                    mainActivityLayout.invalidate();
+                    addNewLayout.clear();
                     isOpenLayout = false;
                 }
             }
@@ -222,32 +221,47 @@ public class SimulatorBoard extends JFrame {
             }
         });
 
+        exitLayout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                System.exit(0);
+            }
+        });
+
         straightRoad.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JTextField roadLength = new JTextField(10);
-                JTextField roadDirection = new JTextField(10);
+//                JTextField roadLength = new JTextField(10);
+//                JTextField roadDirection = new JTextField(10);
+//
+//                JPanel myPanel = new JPanel();
+//                myPanel.add(new JLabel("Road Length:"));
+//                myPanel.add(roadLength);
+//                myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+//                myPanel.add(new JLabel("Road Direction:"));
+//                myPanel.add(roadDirection);
+//
+//                while (true) {
+//                    int result = JOptionPane.showConfirmDialog(null, myPanel,
+//                            "Please Enter Road Length and Direction", JOptionPane.OK_CANCEL_OPTION);
+//                    if (result == JOptionPane.OK_OPTION) {
+//                        System.out.println("road length value: " + roadLength.getText());
+//                        System.out.println("road direction value: " + roadDirection.getText());
+//
+//                    }
+//                    if (roadDirection.getText().equals("horizontal") || roadDirection.getText().equals("vertical")) {
+//                        break;
+//                    }
+//                }
+//                addNewLayout.add(new Straight(Integer.parseInt(roadLength.getText()),5,5,roadDirection.getText()));
+                addNewLayout.add(new Straight(5,5,5,"horizontal"));
+            }
+        });
 
-                JPanel myPanel = new JPanel();
-                myPanel.add(new JLabel("Road Length:"));
-                myPanel.add(roadLength);
-                myPanel.add(Box.createHorizontalStrut(15)); // a spacer
-                myPanel.add(new JLabel("Road Direction:"));
-                myPanel.add(roadDirection);
-
-                while (true) {
-                    int result = JOptionPane.showConfirmDialog(null, myPanel,
-                            "Please Enter Road Length and Direction", JOptionPane.OK_CANCEL_OPTION);
-                    if (result == JOptionPane.OK_OPTION) {
-                        System.out.println("road length value: " + roadLength.getText());
-                        System.out.println("road direction value: " + roadDirection.getText());
-
-                    }
-                    if (roadDirection.getText().equals("horizontal") || roadDirection.getText().equals("vertical")) {
-                        break;
-                    }
-                }
-                addNewLayout.add(new Straight(Integer.parseInt(roadLength.getText()),5,5,roadDirection.getText()));
+        fourWayIntersection.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                addNewLayout.add(new FourWay(10,10));
             }
         });
         return cityMenuBar;

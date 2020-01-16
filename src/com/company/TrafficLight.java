@@ -5,17 +5,23 @@ import java.util.Random;
 public class TrafficLight {
     private String trafficLightColour;
     private double rateOfChange;
-    private String pos;
+    private int pos;
     private int counter = 0;
+    private String printPos;
 
-    public TrafficLight(String pos) {
+    public TrafficLight(int pos, String printPos) {
         this.trafficLightColour = "Green";
-        this.rateOfChange = 0.5;
+        this.rateOfChange = 0.4;
         this.pos = pos;
+        this.printPos = printPos;
     }
 
-    public String getPos() {
+    public int getPos() {
         return pos;
+    }
+
+    public String getPrintPos() {
+        return printPos;
     }
 
     public String getTrafficLightColour() {
