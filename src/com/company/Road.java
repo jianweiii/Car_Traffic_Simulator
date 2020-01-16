@@ -281,7 +281,7 @@ public class Road {
                         if (!trafficLightList.isEmpty()) {
                             // Check for correct traffic light
                             for (TrafficLight trafficLight: trafficLightList) {
-                                if (trafficLight.getPos() == 0) {
+                                if (trafficLight.getPos() == i) {
                                     // Check traffic light condition
                                     if (trafficLight.getTrafficLightColour().equals("Red")) {
                                         //Do nothing and wait

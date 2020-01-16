@@ -8,12 +8,19 @@ public class TrafficLight {
     private int pos;
     private int counter = 0;
     private String printPos;
+    private int ID;
 
-    public TrafficLight(int pos, String printPos) {
+    public TrafficLight(int pos, String printPos, int ID) {
         this.trafficLightColour = "Green";
-        this.rateOfChange = 0.4;
+//        this.rateOfChange = 0.4;
+        if (ID == 1) {
+            this.trafficLightColour = "Green";
+        } else if (ID == 2) {
+            this.trafficLightColour = "Red";
+        }
         this.pos = pos;
         this.printPos = printPos;
+        this.ID = ID;
     }
 
     public int getPos() {
@@ -29,18 +36,15 @@ public class TrafficLight {
     }
 
     public void trafficOperator() {
-        if (counter <= 4) {
+        if (counter <= 8) {
             counter++;
         } else {
-            Random random = new Random();
-            if (random.nextDouble() < rateOfChange) {
-                if (trafficLightColour.equals("Green")) {
-                    trafficLightColour = "Red";
-                    counter = 0;
-                } else {
-                    trafficLightColour = "Green";
-                    counter = 0;
-                }
+            if (trafficLightColour.equals("Green")) {
+                trafficLightColour = "Red";
+                counter = 0;
+            } else {
+                trafficLightColour = "Green";
+                counter = 0;
             }
         }
     }
