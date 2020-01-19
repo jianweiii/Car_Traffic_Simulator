@@ -1,7 +1,5 @@
 package com.company;
 
-import java.util.Random;
-
 public class TrafficLight {
     private String trafficLightColour;
     private double rateOfChange;
@@ -9,8 +7,9 @@ public class TrafficLight {
     private int counter = 0;
     private String printPos;
     private int ID;
+    private int updateRate;
 
-    public TrafficLight(int pos, String printPos, int ID) {
+    public TrafficLight(int pos, String printPos, int ID, int updateRate) {
         this.trafficLightColour = "Green";
 //        this.rateOfChange = 0.4;
         if (ID == 1) {
@@ -21,6 +20,7 @@ public class TrafficLight {
         this.pos = pos;
         this.printPos = printPos;
         this.ID = ID;
+        this.updateRate = updateRate;
     }
 
     public int getPos() {
@@ -36,7 +36,7 @@ public class TrafficLight {
     }
 
     public void trafficOperator() {
-        if (counter <= 8) {
+        if (counter <= (8*updateRate)) {
             counter++;
         } else {
             if (trafficLightColour.equals("Green")) {

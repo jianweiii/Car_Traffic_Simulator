@@ -5,6 +5,8 @@ import com.company.gui.Straight;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,6 +33,9 @@ public class SimulatorBoard extends JFrame {
     private CardLayout mainCard;
     private int roadLength;
     private AddNewLayout addNewLayout;
+    private int totalCars;
+    private int updateRateThread;
+    private int vehicleSpawnRateThread;
 
     private int counter= 0;
 
@@ -46,8 +51,17 @@ public class SimulatorBoard extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mContent = this;
 
+        // Set update rate
+        updateRateThread = 1;
+        // Set vehicle spawn rate
+        vehicleSpawnRateThread = 1;
+
+        // TODO: update car counter
+        // Set car counter
+        totalCars = 0;
+
         // Load all grid layouts
-        gridLayouts = new GridLayouts();
+        gridLayouts = new GridLayouts(updateRateThread);
 //        gridLayouts.createGrid();
         gridLayouts.loadAllFromJSON();
 
@@ -74,33 +88,14 @@ public class SimulatorBoard extends JFrame {
         runSimulator.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if (!simulationRunning) {
-                    System.out.println(executor);
-                    // Do not create new threads if there is a current one
-                    if (executor == null || executor.isTerminated()) {
-                        // Allocate 5 threads
-                        executor = new ScheduledThreadPoolExecutor(5);
-                        executor.scheduleAtFixedRate(new RepaintBoard(simulatorBoard),0,1L, TimeUnit.SECONDS);
-                    }
-
-                }
+                startThread();
             }
         });
 
         stopSimulator.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                executor.shutdown();
-                try {
-                    if (executor.awaitTermination(1000, TimeUnit.MILLISECONDS)) {
-                        System.out.println("task completed");
-                    } else {
-                        System.out.println("Forcing shutdown...");
-                        executor.shutdownNow();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                stopThread();
             }
         });
 
@@ -140,12 +135,40 @@ public class SimulatorBoard extends JFrame {
 
         @Override
         public void run() {
-            if (counter % 5 == 0) {
+            // start: 10* 1 second / how many vehicles to be spawned
+            if (counter % (10*updateRateThread/vehicleSpawnRateThread) == 0) {
                 grid.createVehicle();
+                totalCars += 1;
             }
             grid.updateMap();
             simulatorBoard.repaint();
             counter++;
+        }
+    }
+
+    private void startThread() {
+        if (!simulationRunning) {
+            System.out.println(executor);
+            // Do not create new threads if there is a current one
+            if (executor == null || executor.isTerminated()) {
+                // Allocate 5 threads
+                executor = new ScheduledThreadPoolExecutor(5);
+                executor.scheduleAtFixedRate(new RepaintBoard(simulatorBoard),0,1000/updateRateThread, TimeUnit.MILLISECONDS);
+            }
+        }
+    }
+
+    private void stopThread() {
+        executor.shutdown();
+        try {
+            if (executor.awaitTermination(1000, TimeUnit.MILLISECONDS)) {
+                System.out.println("task completed");
+            } else {
+                System.out.println("Forcing shutdown...");
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -287,7 +310,79 @@ public class SimulatorBoard extends JFrame {
         simulatorMenuBar.add(stopSimulator);
         simulatorMenuBar.add(updateRate);
         simulatorMenuBar.add(vehicleSpawnRate);
+
+        updateRate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                // Stop thread first
+                stopThread();
+
+                // Get user input
+                JFrame updateRate = new JFrame();
+                JOptionPane optionPane = new JOptionPane();
+                JSlider updateSlider = getSlider(optionPane);
+                updateSlider.setMaximum(10);
+                updateSlider.setMinimum(1);
+                updateSlider.setValue(updateRateThread);
+                optionPane.setMessage(new Object[] { "Select a value: ", updateSlider });
+                optionPane.setMessageType(JOptionPane.QUESTION_MESSAGE);
+                optionPane.setOptionType(JOptionPane.OK_CANCEL_OPTION);
+                JDialog dialog = optionPane.createDialog(updateRate, "Update Rate");
+                dialog.setVisible(true);
+                updateRateThread = updateSlider.getValue();
+
+                // Then start the thread again
+                startThread();
+            }
+        });
+
+        // TODO: vehicle spawn rate
+
+        vehicleSpawnRate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                // Stop thread first
+                stopThread();
+
+                // Get user input
+                JFrame vehicleSpawnRate = new JFrame();
+                JOptionPane optionPane = new JOptionPane();
+                JSlider vehicleSlider = getSlider(optionPane);
+                vehicleSlider.setMaximum(5);
+                vehicleSlider.setMinimum(1);
+                vehicleSlider.setValue(vehicleSpawnRateThread);
+                optionPane.setMessage(new Object[] { "Select a value: ", vehicleSlider });
+                optionPane.setMessageType(JOptionPane.QUESTION_MESSAGE);
+                optionPane.setOptionType(JOptionPane.OK_CANCEL_OPTION);
+                JDialog dialog = optionPane.createDialog(vehicleSpawnRate, "Vehicle Spawn Rate");
+                dialog.setVisible(true);
+                vehicleSpawnRateThread = vehicleSlider.getValue();
+
+                // Then start the thread again
+                startThread();
+            }
+        });
+
+
+
+
         return simulatorMenuBar;
+    }
+    static JSlider getSlider(final JOptionPane optionPane) {
+        JSlider slider = new JSlider();
+        slider.setMajorTickSpacing(1);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        ChangeListener changeListener = new ChangeListener() {
+            public void stateChanged(ChangeEvent changeEvent) {
+                JSlider theSlider = (JSlider) changeEvent.getSource();
+                if (!theSlider.getValueIsAdjusting()) {
+                    optionPane.setInputValue(theSlider.getValue());
+                }
+            }
+        };
+        slider.addChangeListener(changeListener);
+        return slider;
     }
 
     private JPanel statusBar() {

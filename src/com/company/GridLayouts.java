@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 public class GridLayouts {
     private Grid[] gridlayouts;
+    private int updateRate;
+
     private JSONObject roadLayoutList;
     private ArrayList<Component> roadComponentArrayList1 = new ArrayList<>();
     private ArrayList<Component> roadComponentArrayList2 = new ArrayList<>();
@@ -22,24 +24,25 @@ public class GridLayouts {
     private ArrayList<Component> roadComponentArrayList4 = new ArrayList<>();
     private ArrayList<Component> roadComponentArrayList5 = new ArrayList<>();
 
-    public GridLayouts() {
+    public GridLayouts(int updateRate) {
         gridlayouts = new Grid[5];
+        this.updateRate = updateRate;
     }
 
     public void createGrid() {
         Grid grid = new Grid(50,50);
         Road road1 = new Road(2,8,6, "horizontal", false);
         road1.setSpawnLocation("start");
-        road1.setTrafficLight( new TrafficLight(road1.getRoadArray()[0].length -1,"start",1));
+        road1.setTrafficLight( new TrafficLight(road1.getRoadArray()[0].length -1,"start",1,updateRate));
         Road road2 = new Road(2,7,8, "vertical", false);
-        road2.setTrafficLight( new TrafficLight(0,"end",2));
+        road2.setTrafficLight( new TrafficLight(0,"end",2,updateRate));
         road2.setSpawnLocation("end");
         Road road3 = new Road(5,8,10,"horizontal",false);
         road3.setSpawnLocation("end");
-        road3.setTrafficLight( new TrafficLight(0,"end",1));
+        road3.setTrafficLight( new TrafficLight(0,"end",1,updateRate));
         Road road4 = new Road(5,14,8,"vertical", false);
         road4.setSpawnLocation("start");
-        road4.setTrafficLight( new TrafficLight(road4.getRoadArray()[0].length -1,"start",2));
+        road4.setTrafficLight( new TrafficLight(road4.getRoadArray()[0].length -1,"start",2,updateRate));
         Intersection intersection1 = new Intersection(1,8,8,"straight", false);
         Road road5 = new Road(3,8,3,"horizontal",false);
         road5.setSpawnLocation("start");
@@ -116,19 +119,18 @@ public class GridLayouts {
             }
             // TODO: 3-way
 
-            // TODO: 4-way
             if (component.getClass() == FourWay.class) {
                 FourWay fourWay = (FourWay) component;
                 int startX = fourWay.getxPos();
                 int startY = fourWay.getyPos();
                 Road road1 = new Road(2,startX+1,startY+1, "horizontal", false);
-                road1.setTrafficLight( new TrafficLight(road1.getRoadArray()[0].length -1,"start",1));
+                road1.setTrafficLight( new TrafficLight(road1.getRoadArray()[0].length -1,"start",1,updateRate));
                 Road road2 = new Road(2,startX+1-1,startY+1+2, "vertical", false);
-                road2.setTrafficLight( new TrafficLight(0,"end",2));
+                road2.setTrafficLight( new TrafficLight(0,"end",2,updateRate));
                 Road road3 = new Road(2,startX+1,startY+1+4,"horizontal",false);
-                road3.setTrafficLight( new TrafficLight(0,"end",1));
+                road3.setTrafficLight( new TrafficLight(0,"end",1,updateRate));
                 Road road4 = new Road(2,startX+1+3,startY+1+2,"vertical", false);
-                road4.setTrafficLight( new TrafficLight(road4.getRoadArray()[0].length -1,"start",2));
+                road4.setTrafficLight( new TrafficLight(road4.getRoadArray()[0].length -1,"start",2,updateRate));
                 Intersection intersection1 = new Intersection(1,startX+1,startY+1+2,"straight", false);
 
                 grid.addRoad(road1);
