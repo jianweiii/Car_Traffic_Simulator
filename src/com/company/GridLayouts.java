@@ -2,14 +2,25 @@ package com.company;
 
 import com.company.gui.FourWay;
 import com.company.gui.Straight;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.awt.*;
-import java.lang.reflect.Array;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class GridLayouts {
     private Grid[] gridlayouts;
+    private JSONObject roadLayoutList;
+    private ArrayList<Component> roadComponentArrayList1 = new ArrayList<>();
+    private ArrayList<Component> roadComponentArrayList2 = new ArrayList<>();
+    private ArrayList<Component> roadComponentArrayList3 = new ArrayList<>();
+    private ArrayList<Component> roadComponentArrayList4 = new ArrayList<>();
+    private ArrayList<Component> roadComponentArrayList5 = new ArrayList<>();
 
     public GridLayouts() {
         gridlayouts = new Grid[5];
@@ -256,9 +267,182 @@ public class GridLayouts {
 
         // Overwrite grid layout
         gridlayouts[option-1] = grid;
+        // Write to JSON
+        writeToJSON(components, option);
     }
 
     public Grid[] getGridlayouts() {
         return gridlayouts;
+    }
+
+    private void writeToJSON(ArrayList<Component> components, int option) {
+
+        // JSON Object
+        //Remove old layout
+        roadLayoutList.remove(String.valueOf(option));
+
+        // Straight
+        JSONObject straight = new JSONObject();
+        JSONArray straightList = new JSONArray();
+
+        // 3way
+        JSONObject threeWay = new JSONObject();
+        JSONArray threeWayList = new JSONArray();
+
+        // 4way
+        JSONObject fourWay = new JSONObject();
+        JSONArray fourWayList = new JSONArray();
+
+        for (Component component: components) {
+            if (component.getClass() == Straight.class) {
+                Straight straightComponent = (Straight) component;
+                int length = straightComponent.getLength();
+                int xStart = straightComponent.getxPos();
+                int yStart = straightComponent.getyPos();
+                String direction = straightComponent.getDirection();
+
+                JSONObject straightObj = new JSONObject();
+                straightObj.put("length", length);
+                straightObj.put("x", xStart);
+                straightObj.put("y", yStart);
+                straightObj.put("direction", direction);
+                straightList.add(straightObj);
+            }
+
+            if (component.getClass() == FourWay.class) {
+                FourWay fourWayComponent = (FourWay) component;
+                int xStart = fourWayComponent.getxPos();
+                int yStart = fourWayComponent.getyPos();
+
+                JSONObject fourWayObj = new JSONObject();
+                fourWayObj.put("x", xStart);
+                fourWayObj.put("y", yStart);
+                fourWayList.add(fourWayObj);
+            }
+        }
+        straight.put("straight",straightList);
+        threeWay.put("threeway",threeWayList);
+        fourWay.put("fourway",fourWayList);
+
+        JSONArray componentList = new JSONArray();
+        componentList.add(straight);
+        componentList.add(threeWay);
+        componentList.add(fourWay);
+
+        roadLayoutList.put(String.valueOf(option), componentList);
+
+        //Write JSON file
+        try (FileWriter file = new FileWriter("road_components.json")) {
+
+            file.write(roadLayoutList.toJSONString());
+            file.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadAllFromJSON(){
+
+
+        //JSON parser object to parse read file
+        JSONParser jsonParser = new JSONParser();
+
+        try (FileReader reader = new FileReader("road_components.json"))
+        {
+            //Read JSON file
+            Object obj = jsonParser.parse(reader);
+
+            roadLayoutList = (JSONObject) obj;
+            System.out.println(roadLayoutList);
+
+            JSONArray layout1 = (JSONArray) roadLayoutList.get("1");
+            parseRoadLayout(layout1,1);
+            JSONArray layout2 = (JSONArray) roadLayoutList.get("2");
+            parseRoadLayout(layout2,2);
+            JSONArray layout3 = (JSONArray) roadLayoutList.get("3");
+            parseRoadLayout(layout3,3);
+            JSONArray layout4 = (JSONArray) roadLayoutList.get("4");
+            parseRoadLayout(layout4,4);
+            JSONArray layout5 = (JSONArray) roadLayoutList.get("5");
+            parseRoadLayout(layout5,5);
+
+
+            saveGridLayout(roadComponentArrayList1,1);
+            saveGridLayout(roadComponentArrayList2,2);
+            saveGridLayout(roadComponentArrayList3,3);
+            saveGridLayout(roadComponentArrayList4,4);
+            saveGridLayout(roadComponentArrayList5,5);
+
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void parseRoadLayout(JSONArray layout, int option) {
+        for (Object roadObj: layout) {
+            JSONObject road = (JSONObject) roadObj;
+            JSONArray straightArray = (JSONArray) road.get("straight");
+            if (straightArray != null) {
+                for (Object straightObj: straightArray) {
+                    JSONObject straightRoadObj = (JSONObject) straightObj;
+                    long lengthLong = (long) straightRoadObj.get("length");
+                    int length = (int) lengthLong;
+                    long xStartLong = (long) straightRoadObj.get("x");
+                    int xStart = (int) xStartLong;
+                    long yStartLong = (long) straightRoadObj.get("y");
+                    int yStart = (int) yStartLong;
+                    String direction = (String) straightRoadObj.get("direction");
+                    Straight straightRoad = new Straight(length,xStart+1,yStart+1,direction);
+                    if (option == 1) {
+                        roadComponentArrayList1.add(straightRoad);
+                    } else if (option == 2) {
+                        roadComponentArrayList2.add(straightRoad);
+                    } else if (option == 3) {
+                        roadComponentArrayList3.add(straightRoad);
+                    } else if (option == 4) {
+                        roadComponentArrayList4.add(straightRoad);
+                    } else if (option == 5) {
+                        roadComponentArrayList5.add(straightRoad);
+                    }
+
+                }
+            }
+            //TODO
+//            JSONArray threeWayArray = (JSONArray) road.get("threeway");
+//            if (threeWayArray != null) {
+//                for (Object threeWayObj: threeWayArray) {
+//                    JSONObject threeWayRoadObj = (JSONObject) threeWayObj;
+//                    int xStart = (int) threeWayRoadObj.get("x");
+//                    int yStart = (int) threeWayRoadObj.get("y");
+//                    String direction = (String) threeWayRoadObj.get("direction");
+//                }
+//            }
+            JSONArray fourWayArray = (JSONArray) road.get("fourway");
+            if (fourWayArray != null) {
+                for (Object fourWayObj: fourWayArray) {
+                    JSONObject fourWayRoadObj = (JSONObject) fourWayObj;
+//                            System.out.println(fourWayRoadObj.get("x"));
+                    long xStartLong = (long) fourWayRoadObj.get("x");
+                    int xStart = (int) xStartLong;
+                    long yStartLong = (long) fourWayRoadObj.get("y");
+                    int yStart = (int) yStartLong;
+                    FourWay fourWay = new FourWay(xStart+1,yStart+1);
+                    if (option == 1) {
+                        roadComponentArrayList1.add(fourWay);
+                    } else if (option == 2) {
+                        roadComponentArrayList2.add(fourWay);
+                    } else if (option == 3) {
+                        roadComponentArrayList3.add(fourWay);
+                    } else if (option == 4) {
+                        roadComponentArrayList4.add(fourWay);
+                    } else if (option == 5) {
+                        roadComponentArrayList5.add(fourWay);
+                    }
+                }
+            }
+        }
     }
 }

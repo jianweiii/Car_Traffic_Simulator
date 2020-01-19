@@ -48,7 +48,8 @@ public class SimulatorBoard extends JFrame {
 
         // Load all grid layouts
         gridLayouts = new GridLayouts();
-        gridLayouts.createGrid();
+//        gridLayouts.createGrid();
+        gridLayouts.loadAllFromJSON();
 
         // For modes
         this.add(modeSelect(),BorderLayout.NORTH);
@@ -215,8 +216,11 @@ public class SimulatorBoard extends JFrame {
         saveLayout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-//                int layoutOption = Integer.parseInt(JOptionPane.showInputDialog("Save to layout(1-5)"));
-                int layoutOption = 2;
+                int layoutOption;
+                do {
+                    layoutOption = Integer.parseInt(JOptionPane.showInputDialog("Save to layout(1-5)"));
+                } while (layoutOption < 1 || layoutOption > 5);
+//                int layoutOption = 2;
                 gridLayouts.saveGridLayout(addNewLayout.getComponentsArray(), layoutOption);
             }
         });
