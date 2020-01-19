@@ -14,8 +14,9 @@ public class Grid extends JPanel {
     private Vehicle[][] vehicleGridMap;
     private ArrayList<Road> roadList;
     private ArrayList<Road> spawnPoints;
+    private SimulatorBoard simulatorBoard;
 
-    public Grid(int gridHeight, int gridWidth) {
+    public Grid(int gridHeight, int gridWidth, SimulatorBoard simulatorBoard) {
         this.roadList = new ArrayList<>();
         this.spawnPoints = new ArrayList<>();
         this.gridHeight = gridHeight;
@@ -23,6 +24,7 @@ public class Grid extends JPanel {
 
         this.gridMap = new int[gridHeight][gridWidth];
         this.vehicleGridMap = new Vehicle[gridHeight][gridWidth];
+        this.simulatorBoard = simulatorBoard;
     }
 
     public void createVehicle() {
@@ -88,8 +90,8 @@ public class Grid extends JPanel {
                 int y = (row*panelHeight) / gridMap[row].length;
 
                 // TODO: CHAGNE BACK
-//                graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
-                graphicsSettings.fillRect(x-1,y-1,xWidth-1,yHeight-1);
+                graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
+//                graphicsSettings.fillRect(x-1,y-1,xWidth-1,yHeight-1);
             }
 
         }
@@ -223,7 +225,18 @@ public class Grid extends JPanel {
     Update traffic light colours
      */
     public void updateMap() {
+        simulatorBoard.totalTrafficLights = 0;
         for (Road road: roadList) {
+            // Get total number of traffic lights
+            try {
+                if (road.getTrafficLightList().get(0) != null) {
+                    simulatorBoard.totalTrafficLights += 1;
+                }
+            } catch (Exception e) {
+                // null pointers/ index out of bounds for those roads without traffic lights
+            }
+
+
             int startX = road.getxCoord();
             int startY = road.getyCoord();
             String direction = road.getDirection();
@@ -295,6 +308,7 @@ public class Grid extends JPanel {
                 vehicleGridMap[startX][startY-1] = vehicleIntersection[3];
             }
         }
+        simulatorBoard.updateTrafficLightStatus();
     }
 
     public void moveVehicles() {

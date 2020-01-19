@@ -1,17 +1,10 @@
 package com.company;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.lang.reflect.Array;
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class Main {
 
     public static void main(String[] args) {
 
-        Grid grid = new Grid(20,20);
+//        Grid grid = new Grid(20,20);
 //        Road road1 = new Road(2,8,6, "horizontal", false);
 //        road1.setSpawnLocation("start");
 //        road1.setTrafficLight( new TrafficLight("start"));
@@ -95,25 +88,25 @@ public class Main {
 //            grid.moveVehicles();
 //            System.out.println();
 //        }
-        final int[] i = {0};
-        int delay = 0;
-        int interval = 500;
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if(i[0] % 5 ==0) {
-                    grid.createVehicle();
-                }
-                grid.updateMap();
-                grid.displayAll();
-                grid.moveVehicles();
-                System.out.println();
-                i[0]++;
-
+//        final int[] i = {0};
+//        int delay = 0;
+//        int interval = 500;
+//        Timer timer = new Timer();
+//        timer.scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                if(i[0] % 5 ==0) {
+//                    grid.createVehicle();
+//                }
+//                grid.updateMap();
 //                grid.displayAll();
-            }
-        },delay,interval);
+//                grid.moveVehicles();
+//                System.out.println();
+//                i[0]++;
+//
+////                grid.displayAll();
+//            }
+//        },delay,interval);
 
     }
 }

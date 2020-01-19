@@ -20,7 +20,7 @@ public class TrafficLight {
         this.pos = pos;
         this.printPos = printPos;
         this.ID = ID;
-        this.updateRate = updateRate;
+        this.updateRate = updateRate*updateRate;
     }
 
     public int getPos() {
@@ -36,7 +36,7 @@ public class TrafficLight {
     }
 
     public void trafficOperator() {
-        if (counter <= (8*updateRate)) {
+        if (counter <= (10*updateRate)) {
             counter++;
         } else {
             if (trafficLightColour.equals("Green")) {

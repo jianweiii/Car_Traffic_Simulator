@@ -1,8 +1,6 @@
 package com.company;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 public class Intersection extends Road {
     private Vehicle vehicle;
@@ -14,10 +12,12 @@ public class Intersection extends Road {
     private Vehicle[] intersectionGrid;
     private ArrayList<Road> roadOption = new ArrayList<>();
 
-    public Intersection(int roadLength, int startX, int startY, String direction, Boolean spawnPoint) {
-        super(roadLength, startX, startY, direction, spawnPoint);
+    public Intersection(int roadLength, int startX, int startY, String direction, Boolean spawnPoint, SimulatorBoard simulatorBoard) {
+        super(roadLength, startX, startY, direction, spawnPoint, simulatorBoard);
         this.intersectionGrid = new Vehicle[4];
     }
+
+
 
 
     public Road getPreviousRoad() {

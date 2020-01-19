@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class GridLayouts {
     private Grid[] gridlayouts;
     private int updateRate;
+    private SimulatorBoard simulatorBoard;
 
     private JSONObject roadLayoutList;
     private ArrayList<Component> roadComponentArrayList1 = new ArrayList<>();
@@ -24,58 +25,16 @@ public class GridLayouts {
     private ArrayList<Component> roadComponentArrayList4 = new ArrayList<>();
     private ArrayList<Component> roadComponentArrayList5 = new ArrayList<>();
 
-    public GridLayouts(int updateRate) {
+    public GridLayouts(SimulatorBoard simulatorBoard, int updateRate) {
+        this.simulatorBoard = simulatorBoard;
         gridlayouts = new Grid[5];
         this.updateRate = updateRate;
     }
 
-    public void createGrid() {
-        Grid grid = new Grid(50,50);
-        Road road1 = new Road(2,8,6, "horizontal", false);
-        road1.setSpawnLocation("start");
-        road1.setTrafficLight( new TrafficLight(road1.getRoadArray()[0].length -1,"start",1,updateRate));
-        Road road2 = new Road(2,7,8, "vertical", false);
-        road2.setTrafficLight( new TrafficLight(0,"end",2,updateRate));
-        road2.setSpawnLocation("end");
-        Road road3 = new Road(5,8,10,"horizontal",false);
-        road3.setSpawnLocation("end");
-        road3.setTrafficLight( new TrafficLight(0,"end",1,updateRate));
-        Road road4 = new Road(5,14,8,"vertical", false);
-        road4.setSpawnLocation("start");
-        road4.setTrafficLight( new TrafficLight(road4.getRoadArray()[0].length -1,"start",2,updateRate));
-        Intersection intersection1 = new Intersection(1,8,8,"straight", false);
-        Road road5 = new Road(3,8,3,"horizontal",false);
-        road5.setSpawnLocation("start");
-        Road road6 = new Road(3,5,8,"vertical",true);
-        road6.setSpawnLocation("end");
-
-
-
-
-
-        grid.addRoad(road1);
-        grid.addRoad(road2);
-        grid.addRoad(road3);
-        grid.addRoad(road4);
-        grid.addRoad(intersection1);
-        grid.setIntersectionNextRoad(intersection1,road2,road4,road3,road1);
-        grid.setNextRoad(road1,intersection1,road5);
-        grid.setNextRoad(road2,road6,intersection1);
-        grid.setNextRoad(road3,null,intersection1);
-        grid.setNextRoad(road4,intersection1,null);
-        grid.addRoad(road5);
-        grid.setNextRoad(road5,road1,null);
-        grid.addRoad(road6);
-        grid.setNextRoad(road6,null,road2);
-
-        gridlayouts[0] = grid;
-    }
-
     public void saveGridLayout(ArrayList<Component> components, int option) {
-        Grid grid = new Grid(50,50);
+        Grid grid = new Grid(50,50, simulatorBoard);
         ArrayList<Road> roadArray = new ArrayList<>();
-        ArrayList<ArrayList<Road>> multiRoadArray = new ArrayList<>();
-        ArrayList<Intersection> intersectionArray = new ArrayList<>();
+
         for (Component component: components) {
             // if road is straight
             if (component.getClass() == Straight.class) {
@@ -89,7 +48,7 @@ public class GridLayouts {
                 if ((startY == 0 && direction.equals("horizontal")) || (startX == 49 && direction.equals("vertical"))) {
 //                    System.out.println("starty:" + startY);
 //                    System.out.println("startx:" + startX);
-                    Road road = new Road(roadLength,startX+1,startY+1,direction, true);
+                    Road road = new Road(roadLength,startX+1,startY+1,direction, true,simulatorBoard);
 //                    System.out.println(String.format("sx:%d, sy:%d, ex:%d. ey:%d",
 //                            road.getxCoord(),road.getyCoord(),road.getxRTpos(),road.getyRTpos()));
                     road.setSpawnLocation("start");
@@ -100,7 +59,7 @@ public class GridLayouts {
                 } else if ((startX+1-roadLength == 0 && direction.equals("vertical")) || (startY+roadLength-1 == 49 && direction.equals("horizontal"))) {
 //                    System.out.println("starty:" + startY);
 //                    System.out.println("startx:" + startX);
-                    Road road = new Road(roadLength,startX+1,startY+1,direction, true);
+                    Road road = new Road(roadLength,startX+1,startY+1,direction, true,simulatorBoard);
 //                    System.out.println(String.format("sx:%d, sy:%d, ex:%d. ey:%d",
 //                            road.getxCoord(),road.getyCoord(),road.getxRTpos(),road.getyRTpos()));
                     road.setSpawnLocation("end");
@@ -109,7 +68,7 @@ public class GridLayouts {
 //                    System.out.println(road);
 
                 } else {
-                    Road road = new Road(roadLength,startX+1,startY+1,direction, false);
+                    Road road = new Road(roadLength,startX+1,startY+1,direction, false,simulatorBoard);
 //                    System.out.println(String.format("sx:%d, sy:%d, ex:%d. ey:%d",
 //                            road.getxCoord(),road.getyCoord(),road.getxRTpos(),road.getyRTpos()));
                     roadArray.add(road);
@@ -123,15 +82,15 @@ public class GridLayouts {
                 FourWay fourWay = (FourWay) component;
                 int startX = fourWay.getxPos();
                 int startY = fourWay.getyPos();
-                Road road1 = new Road(2,startX+1,startY+1, "horizontal", false);
+                Road road1 = new Road(2,startX+1,startY+1, "horizontal", false,simulatorBoard);
                 road1.setTrafficLight( new TrafficLight(road1.getRoadArray()[0].length -1,"start",1,updateRate));
-                Road road2 = new Road(2,startX+1-1,startY+1+2, "vertical", false);
+                Road road2 = new Road(2,startX+1-1,startY+1+2, "vertical", false,simulatorBoard);
                 road2.setTrafficLight( new TrafficLight(0,"end",2,updateRate));
-                Road road3 = new Road(2,startX+1,startY+1+4,"horizontal",false);
+                Road road3 = new Road(2,startX+1,startY+1+4,"horizontal",false,simulatorBoard);
                 road3.setTrafficLight( new TrafficLight(0,"end",1,updateRate));
-                Road road4 = new Road(2,startX+1+3,startY+1+2,"vertical", false);
+                Road road4 = new Road(2,startX+1+3,startY+1+2,"vertical", false,simulatorBoard);
                 road4.setTrafficLight( new TrafficLight(road4.getRoadArray()[0].length -1,"start",2,updateRate));
-                Intersection intersection1 = new Intersection(1,startX+1,startY+1+2,"straight", false);
+                Intersection intersection1 = new Intersection(1,startX+1,startY+1+2,"straight", false,simulatorBoard);
 
                 grid.addRoad(road1);
                 grid.addRoad(road2);

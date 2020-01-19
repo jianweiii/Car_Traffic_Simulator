@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class SimulatorBoard extends JFrame {
     private static SimulatorBoard simulatorBoard;
 
-    private static int boardWidth = 1000;
+    private static int boardWidth = 1100;
     private static int boardHeight = 1000;
 
     private GridLayouts gridLayouts;
@@ -25,7 +25,7 @@ public class SimulatorBoard extends JFrame {
     private JButton runSimulator, stopSimulator;
     private JButton openLayout;
     private JLabel curMode;
-    private JLabel curStatus;
+    private JLabel vehicleStatus, trafficLightStatus;
     private Boolean simulationRunning = false;
     ScheduledThreadPoolExecutor executor;
     private JFrame mContent;
@@ -33,7 +33,8 @@ public class SimulatorBoard extends JFrame {
     private CardLayout mainCard;
     private int roadLength;
     private AddNewLayout addNewLayout;
-    private int totalCars;
+    public int totalVehicles;
+    public int totalTrafficLights;
     private int updateRateThread;
     private int vehicleSpawnRateThread;
 
@@ -51,17 +52,19 @@ public class SimulatorBoard extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mContent = this;
 
+
         // Set update rate
         updateRateThread = 1;
         // Set vehicle spawn rate
         vehicleSpawnRateThread = 1;
 
         // TODO: update car counter
-        // Set car counter
-        totalCars = 0;
+        // Set status counters
+        totalVehicles = 0;
+        totalTrafficLights = 0;
 
         // Load all grid layouts
-        gridLayouts = new GridLayouts(updateRateThread);
+        gridLayouts = new GridLayouts(this, updateRateThread);
 //        gridLayouts.createGrid();
         gridLayouts.loadAllFromJSON();
 
@@ -104,7 +107,7 @@ public class SimulatorBoard extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 cardLayout.show(menuBar,"city");
-                curMode.setText("City Edit");
+                curMode.setText(" City Edit ");
             }
         });
 
@@ -116,6 +119,8 @@ public class SimulatorBoard extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 mainCard.show(mainActivityLayout, "openLayout");
+                totalVehicles = 0;
+                updateVehicleStatus();
             }
         });
 
@@ -138,7 +143,8 @@ public class SimulatorBoard extends JFrame {
             // start: 10* 1 second / how many vehicles to be spawned
             if (counter % (10*updateRateThread/vehicleSpawnRateThread) == 0) {
                 grid.createVehicle();
-                totalCars += 1;
+                totalVehicles += 1;
+                updateVehicleStatus();
             }
             grid.updateMap();
             simulatorBoard.repaint();
@@ -285,6 +291,8 @@ public class SimulatorBoard extends JFrame {
             }
         });
 
+        //TODO: 3 way
+
         fourWayIntersection.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -336,8 +344,6 @@ public class SimulatorBoard extends JFrame {
             }
         });
 
-        // TODO: vehicle spawn rate
-
         vehicleSpawnRate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -362,12 +368,9 @@ public class SimulatorBoard extends JFrame {
                 startThread();
             }
         });
-
-
-
-
         return simulatorMenuBar;
     }
+
     static JSlider getSlider(final JOptionPane optionPane) {
         JSlider slider = new JSlider();
         slider.setMajorTickSpacing(1);
@@ -386,23 +389,44 @@ public class SimulatorBoard extends JFrame {
     }
 
     private JPanel statusBar() {
-        JPanel statusUpdate = new JPanel();
-        statusUpdate.setLayout(new GridLayout(1,4));
+        JPanel statusUpdate = new JPanel(new FlowLayout());
         statusUpdate.setBorder(new EmptyBorder(10,0,10,0));
+
+        JPanel modePanel = new JPanel(new GridLayout(1,2));
+        JPanel statusPanel = new JPanel(new GridLayout(1,3));
+
         JLabel modeLabel = new JLabel("Mode:");
         modeLabel.setFont(new Font("Helvetica", Font.PLAIN,30));
         modeLabel.setHorizontalAlignment(JLabel.CENTER);
-        statusUpdate.add(modeLabel);
+        modePanel.add(modeLabel);
+
         curMode = new JLabel();
         curMode.setFont(new Font("Helvetica", Font.PLAIN,30));
-        statusUpdate.add(curMode);
+        curMode.setText(" City Edit ");
+        modePanel.add(curMode);
+
+
         JLabel statusLabel = new JLabel("Status:");
         statusLabel.setFont(new Font("Helvetica", Font.PLAIN,30));
         statusLabel.setHorizontalAlignment(JLabel.CENTER);
-        statusUpdate.add(statusLabel);
-        curStatus = new JLabel();
-        curStatus.setFont(new Font("Helvetica", Font.PLAIN,30));
-        statusUpdate.add(curStatus);
+        statusPanel.add(statusLabel);
+
+
+        vehicleStatus = new JLabel();
+        vehicleStatus.setFont(new Font("Helvetica", Font.PLAIN,30));
+        statusPanel.add(vehicleStatus);
+
+        trafficLightStatus = new JLabel();
+        trafficLightStatus.setFont(new Font("Helvetica", Font.PLAIN,30));
+        statusPanel.add(trafficLightStatus);
+
+
+        updateVehicleStatus();
+        updateTrafficLightStatus();
+
+        statusUpdate.add(modePanel);
+        statusUpdate.add(statusPanel);
+
         return statusUpdate;
     }
 
@@ -516,5 +540,13 @@ public class SimulatorBoard extends JFrame {
 
 //        addNewLayout.setLayout();
         return addNewLayout;
+    }
+
+    public void updateVehicleStatus() {
+        vehicleStatus.setText(String.format("%2d Vehicles",totalVehicles));
+    }
+
+    public void updateTrafficLightStatus() {
+        trafficLightStatus.setText(String.format("%2d Traffic Lights",totalTrafficLights));
     }
 }

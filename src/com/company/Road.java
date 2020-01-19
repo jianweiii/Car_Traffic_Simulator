@@ -1,7 +1,6 @@
 package com.company;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Road {
     private int xCoord, xRTpos;
@@ -16,8 +15,9 @@ public class Road {
     private Boolean spawnPoint;
     private String spawnLocation;
     private ArrayList<TrafficLight> trafficLightList = new ArrayList<>();
+    private SimulatorBoard simulatorBoard;
 
-    public Road(int roadLength, int startX, int startY, String direction, Boolean spawnPoint) {
+    public Road(int roadLength, int startX, int startY, String direction, Boolean spawnPoint,SimulatorBoard simulatorBoard) {
         // Initiates number of road segments
         this.xCoord = startX;
         this.yCoord = startY;
@@ -26,6 +26,7 @@ public class Road {
         this.roadArray = new Vehicle[2][roadLength];
         this.spawnPoint = spawnPoint;
         this.curRoad = this;
+        this.simulatorBoard = simulatorBoard;
     }
 
     public Vehicle getVehicle() {
@@ -232,6 +233,8 @@ public class Road {
                         }
                     } else {
                         roadArray[0][roadArray[0].length - 1] = null;
+                        simulatorBoard.totalVehicles -= 1;
+                        simulatorBoard.updateVehicleStatus();
                     }
                 }
             } else {
@@ -364,6 +367,8 @@ public class Road {
                     } else {
                         // Destroy car if no further roads
                         roadArray[1][0] = null;
+                        simulatorBoard.totalVehicles -= 1;
+                        simulatorBoard.updateVehicleStatus();
                     }
                 }
             } else {
