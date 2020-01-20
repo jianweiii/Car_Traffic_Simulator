@@ -2,11 +2,11 @@ package com.company;
 
 import com.company.gui.FourWay;
 import com.company.gui.Straight;
+import com.company.gui.ThreeWay;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class AddNewLayout extends JPanel {
     private int gridHeight, gridWidth;
@@ -38,6 +38,64 @@ public class AddNewLayout extends JPanel {
                 updateStraightComponent(component);
             }
 
+            // TODO: CHECK WHY VEHICLES ARE GOING MISSING IN JUNCTION
+            if (component.getClass() == ThreeWay.class) {
+                ThreeWay threeWay = (ThreeWay) component;
+                int xStartThreeWay = threeWay.getxPos();
+                int yStartThreeWay = threeWay.getyPos();
+                String direction = threeWay.getDirection();
+
+                if (direction.equals("north")) {
+                    for (int row=0;row<2;row++) {
+                        for (int col=0;col<6;col++) {
+                            gridMap[xStartThreeWay+row][yStartThreeWay+col] = 22;
+                        }
+                    }
+
+                    for (int row=0;row<2;row++) {
+                        for (int col=0;col<2;col++) {
+                            gridMap[xStartThreeWay-1-row][yStartThreeWay+2+col] = 22;
+                        }
+                    }
+                } else if (direction.equals("south")) {
+                    for (int row=0;row<2;row++) {
+                        for (int col=0;col<6;col++) {
+                            gridMap[xStartThreeWay+row][yStartThreeWay+col] = 22;
+                        }
+                    }
+
+                    for (int row=0;row<2;row++) {
+                        for (int col=0;col<2;col++) {
+                            gridMap[xStartThreeWay+3-row][yStartThreeWay+2+col] = 22;
+                        }
+                    }
+                } else if (direction.equals("east")) {
+                    for (int row=0;row<2;row++) {
+                        for (int col=0;col<2;col++) {
+                            gridMap[xStartThreeWay+row][yStartThreeWay+4+col] = 22;
+                        }
+                    }
+
+                    for (int row=0;row<6;row++) {
+                        for (int col=0;col<2;col++) {
+                            gridMap[xStartThreeWay+3-row][yStartThreeWay+2+col] = 22;
+                        }
+                    }
+                } else if (direction.equals("west")) {
+                    for (int row=0;row<2;row++) {
+                        for (int col=0;col<2;col++) {
+                            gridMap[xStartThreeWay+row][yStartThreeWay+col] = 22;
+                        }
+                    }
+
+                    for (int row=0;row<6;row++) {
+                        for (int col=0;col<2;col++) {
+                            gridMap[xStartThreeWay+3-row][yStartThreeWay+2+col] = 22;
+                        }
+                    }
+                }
+            }
+
             if (component.getClass() == FourWay.class) {
                 FourWay fourWay = (FourWay) component;
                 int xStartFourWay = fourWay.getxPos();
@@ -55,6 +113,8 @@ public class AddNewLayout extends JPanel {
                     }
                 }
             }
+
+
 
 
         }

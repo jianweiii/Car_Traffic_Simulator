@@ -58,4 +58,6 @@ public class FourWay extends JPanel {
     public int getyPos() {
         return yPos-1;
     }
+
+
 }

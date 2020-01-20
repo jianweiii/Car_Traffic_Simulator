@@ -2,6 +2,7 @@ package com.company;
 
 import com.company.gui.FourWay;
 import com.company.gui.Straight;
+import com.company.gui.ThreeWay;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -58,7 +59,6 @@ public class SimulatorBoard extends JFrame {
         // Set vehicle spawn rate
         vehicleSpawnRateThread = 1;
 
-        // TODO: update car counter
         // Set status counters
         totalVehicles = 0;
         totalTrafficLights = 0;
@@ -287,11 +287,35 @@ public class SimulatorBoard extends JFrame {
                     }
                 }
                 addNewLayout.add(new Straight(Integer.parseInt(roadLength.getText()),20,20,roadDirection.getText()));
-//                addNewLayout.add(new Straight(5,10,10,"vertical"));
             }
         });
 
-        //TODO: 3 way
+        threeWayIntersection.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JTextField roadDirection = new JTextField(10);
+
+                JPanel myPanel = new JPanel();
+                myPanel.add(new JLabel("Road Direction:"));
+                myPanel.add(roadDirection);
+
+                while (true) {
+                    int result = JOptionPane.showConfirmDialog(null, myPanel,
+                            "Please Enter Intersection Direction", JOptionPane.OK_CANCEL_OPTION);
+                    if (result == JOptionPane.OK_OPTION) {
+                        System.out.println("road direction value: " + roadDirection.getText());
+
+                    }
+                    if (roadDirection.getText().equals("north") ||
+                            roadDirection.getText().equals("south") ||
+                            roadDirection.getText().equals("east") ||
+                            roadDirection.getText().equals("west")) {
+                        break;
+                    }
+                }
+                addNewLayout.add(new ThreeWay(20,20,roadDirection.getText()));
+            }
+        });
 
         fourWayIntersection.addActionListener(new ActionListener() {
             @Override

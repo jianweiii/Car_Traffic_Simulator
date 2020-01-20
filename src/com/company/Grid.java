@@ -90,8 +90,8 @@ public class Grid extends JPanel {
                 int y = (row*panelHeight) / gridMap[row].length;
 
                 // TODO: CHAGNE BACK
-                graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
-//                graphicsSettings.fillRect(x-1,y-1,xWidth-1,yHeight-1);
+//                graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
+                graphicsSettings.fillRect(x-1,y-1,xWidth-1,yHeight-1);
             }
 
         }

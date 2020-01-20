@@ -40,8 +40,16 @@ public class Vehicle {
         return roadOption.get(chosenNumber);
     }
 
-    public Boolean leaveRoad () {
+    public Boolean leaveRoadFourWay () {
         if (position == 3) {
+            return true;
+        }
+        Random r = new Random();
+        return r.nextBoolean();
+    }
+
+    public Boolean leaveRoadThreeWay () {
+        if (position == 4) {
             return true;
         }
         Random r = new Random();

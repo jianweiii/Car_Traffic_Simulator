@@ -11,10 +11,13 @@ public class Intersection extends Road {
     private Road nextWestRoad = null;
     private Vehicle[] intersectionGrid;
     private ArrayList<Road> roadOption = new ArrayList<>();
+    private String direction;
 
     public Intersection(int roadLength, int startX, int startY, String direction, Boolean spawnPoint, SimulatorBoard simulatorBoard) {
         super(roadLength, startX, startY, direction, spawnPoint, simulatorBoard);
         this.intersectionGrid = new Vehicle[4];
+        this.direction = direction;
+        System.out.println(direction);
     }
 
 
@@ -104,39 +107,77 @@ public class Intersection extends Road {
     public void moveVehicleUp() {
         super.moveVehicleUp();
 
-        // Before moving array, check if vehicle wants to leave intersection
-        if (intersectionGrid[0] != null
-                && intersectionGrid[0].getPosition() !=0
-                && nextNorthRoad != null) {
-            if (intersectionGrid[0].leaveRoad()) {
-                nextNorthRoad.setVehicle(intersectionGrid[0],"start");
-                intersectionGrid[0] = null;
+        if (direction.equals("fourway")) {
+            // Before moving array, check if vehicle wants to leave intersection
+            if (intersectionGrid[0] != null
+                    && intersectionGrid[0].getPosition() !=0
+                    && nextNorthRoad != null) {
+                if (intersectionGrid[0].leaveRoadFourWay()) {
+                    nextNorthRoad.setVehicle(intersectionGrid[0],"start");
+                    intersectionGrid[0] = null;
+                }
+            }
+            if (intersectionGrid[1] != null
+                    && intersectionGrid[1].getPosition() !=0
+                    && nextEastRoad != null) {
+                if (intersectionGrid[1].leaveRoadFourWay()) {
+                    nextEastRoad.setVehicle(intersectionGrid[1],"start");
+                    intersectionGrid[1] = null;
+                }
+            }
+            if (intersectionGrid[2] != null
+                    && intersectionGrid[2].getPosition() !=0
+                    && nextSouthRoad != null) {
+                if (intersectionGrid[2].leaveRoadFourWay()) {
+                    nextSouthRoad.setVehicle(intersectionGrid[2],"end");
+                    intersectionGrid[2] = null;
+                }
+            }
+            if (intersectionGrid[3] != null
+                    && intersectionGrid[3].getPosition() !=0
+                    && nextWestRoad != null) {
+                if (intersectionGrid[3].leaveRoadFourWay()) {
+                    nextWestRoad.setVehicle(intersectionGrid[3],"end");
+                    intersectionGrid[3] = null;
+                }
             }
         }
-        if (intersectionGrid[1] != null
-                && intersectionGrid[1].getPosition() !=0
-                && nextEastRoad != null) {
-            if (intersectionGrid[1].leaveRoad()) {
-                nextEastRoad.setVehicle(intersectionGrid[1],"start");
-                intersectionGrid[1] = null;
+        if (direction.equals("threeway")) {
+            // Before moving array, check if vehicle wants to leave intersection
+            if (intersectionGrid[0] != null
+                    && intersectionGrid[0].getPosition() !=0
+                    && nextNorthRoad != null) {
+                if (intersectionGrid[0].leaveRoadThreeWay()) {
+                    nextNorthRoad.setVehicle(intersectionGrid[0],"start");
+                    intersectionGrid[0] = null;
+                }
+            }
+            if (intersectionGrid[1] != null
+                    && intersectionGrid[1].getPosition() !=0
+                    && nextEastRoad != null) {
+                if (intersectionGrid[1].leaveRoadThreeWay()) {
+                    nextEastRoad.setVehicle(intersectionGrid[1],"start");
+                    intersectionGrid[1] = null;
+                }
+            }
+            if (intersectionGrid[2] != null
+                    && intersectionGrid[2].getPosition() !=0
+                    && nextSouthRoad != null) {
+                if (intersectionGrid[2].leaveRoadThreeWay()) {
+                    nextSouthRoad.setVehicle(intersectionGrid[2],"end");
+                    intersectionGrid[2] = null;
+                }
+            }
+            if (intersectionGrid[3] != null
+                    && intersectionGrid[3].getPosition() !=0
+                    && nextWestRoad != null) {
+                if (intersectionGrid[3].leaveRoadThreeWay()) {
+                    nextWestRoad.setVehicle(intersectionGrid[3],"end");
+                    intersectionGrid[3] = null;
+                }
             }
         }
-        if (intersectionGrid[2] != null
-                && intersectionGrid[2].getPosition() !=0
-                && nextSouthRoad != null) {
-            if (intersectionGrid[2].leaveRoad()) {
-                nextSouthRoad.setVehicle(intersectionGrid[2],"end");
-                intersectionGrid[2] = null;
-            }
-        }
-        if (intersectionGrid[3] != null
-                && intersectionGrid[3].getPosition() !=0
-                && nextWestRoad != null) {
-            if (intersectionGrid[3].leaveRoad()) {
-                nextWestRoad.setVehicle(intersectionGrid[3],"end");
-                intersectionGrid[3] = null;
-            }
-        }
+
 
 
 

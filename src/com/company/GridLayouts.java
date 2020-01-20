@@ -2,6 +2,7 @@ package com.company;
 
 import com.company.gui.FourWay;
 import com.company.gui.Straight;
+import com.company.gui.ThreeWay;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -76,7 +77,98 @@ public class GridLayouts {
 //                    System.out.println(road);
                 }
             }
-            // TODO: 3-way
+            if (component.getClass() == ThreeWay.class) {
+                ThreeWay threeWay = (ThreeWay) component;
+                int startX = threeWay.getxPos();
+                int startY = threeWay.getyPos();
+                String direction = threeWay.getDirection();
+
+                if (direction.equals("north")) {
+                    Road road1 = new Road(2,startX+1,startY+1, "horizontal", false,simulatorBoard);
+                    road1.setTrafficLight( new TrafficLight(road1.getRoadArray()[0].length -1,"start",1,updateRate));
+                    Road road2 = new Road(2,startX+1-1,startY+1+2, "vertical", false,simulatorBoard);
+                    road2.setTrafficLight( new TrafficLight(0,"end",2,updateRate));
+                    Road road3 = new Road(2,startX+1,startY+1+4,"horizontal",false,simulatorBoard);
+                    road3.setTrafficLight( new TrafficLight(0,"end",1,updateRate));
+                    Intersection intersection1 = new Intersection(1,startX+1,startY+1+2,"threeway", false,simulatorBoard);
+
+                    grid.addRoad(road1);
+                    grid.addRoad(road2);
+                    grid.addRoad(road3);
+                    grid.addRoad(intersection1);
+                    grid.setIntersectionNextRoad(intersection1,road2,null,road3,road1);
+                    grid.setNextRoad(road1,intersection1,null);
+                    grid.setNextRoad(road2,null,intersection1);
+                    grid.setNextRoad(road3,null,intersection1);
+
+                    roadArray.add(road1);
+                    roadArray.add(road2);
+                    roadArray.add(road3);
+                } else if (direction.equals("south")) {
+                    Road road1 = new Road(2,startX+1,startY+1, "horizontal", false,simulatorBoard);
+                    road1.setTrafficLight( new TrafficLight(road1.getRoadArray()[0].length -1,"start",1,updateRate));
+                    Road road3 = new Road(2,startX+1,startY+1+4,"horizontal",false,simulatorBoard);
+                    road3.setTrafficLight( new TrafficLight(0,"end",1,updateRate));
+                    Road road4 = new Road(2,startX+1+3,startY+1+2,"vertical", false,simulatorBoard);
+                    road4.setTrafficLight( new TrafficLight(road4.getRoadArray()[0].length -1,"start",2,updateRate));
+                    Intersection intersection1 = new Intersection(1,startX+1,startY+1+2,"threeway", false,simulatorBoard);
+
+                    grid.addRoad(road1);
+                    grid.addRoad(road3);
+                    grid.addRoad(road4);
+                    grid.addRoad(intersection1);
+                    grid.setIntersectionNextRoad(intersection1,null,road4,road3,road1);
+                    grid.setNextRoad(road1,intersection1,null);
+                    grid.setNextRoad(road3,null,intersection1);
+                    grid.setNextRoad(road4,intersection1,null);
+
+                    roadArray.add(road1);
+                    roadArray.add(road3);
+                    roadArray.add(road4);
+                } else if (direction.equals("east")) {
+                    Road road2 = new Road(2,startX+1-1,startY+1+2, "vertical", false,simulatorBoard);
+                    road2.setTrafficLight( new TrafficLight(0,"end",2,updateRate));
+                    Road road3 = new Road(2,startX+1,startY+1+4,"horizontal",false,simulatorBoard);
+                    road3.setTrafficLight( new TrafficLight(0,"end",1,updateRate));
+                    Road road4 = new Road(2,startX+1+3,startY+1+2,"vertical", false,simulatorBoard);
+                    road4.setTrafficLight( new TrafficLight(road4.getRoadArray()[0].length -1,"start",2,updateRate));
+                    Intersection intersection1 = new Intersection(1,startX+1,startY+1+2,"threeway", false,simulatorBoard);
+
+                    grid.addRoad(road2);
+                    grid.addRoad(road3);
+                    grid.addRoad(road4);
+                    grid.addRoad(intersection1);
+                    grid.setIntersectionNextRoad(intersection1,road2,road4,road3,null);
+                    grid.setNextRoad(road2,null,intersection1);
+                    grid.setNextRoad(road3,null,intersection1);
+                    grid.setNextRoad(road4,intersection1,null);
+
+                    roadArray.add(road2);
+                    roadArray.add(road3);
+                    roadArray.add(road4);
+                } else if (direction.equals("west")) {
+                    Road road1 = new Road(2,startX+1,startY+1, "horizontal", false,simulatorBoard);
+                    road1.setTrafficLight( new TrafficLight(road1.getRoadArray()[0].length -1,"start",1,updateRate));
+                    Road road2 = new Road(2,startX+1-1,startY+1+2, "vertical", false,simulatorBoard);
+                    road2.setTrafficLight( new TrafficLight(0,"end",2,updateRate));
+                    Road road4 = new Road(2,startX+1+3,startY+1+2,"vertical", false,simulatorBoard);
+                    road4.setTrafficLight( new TrafficLight(road4.getRoadArray()[0].length -1,"start",2,updateRate));
+                    Intersection intersection1 = new Intersection(1,startX+1,startY+1+2,"threeway", false,simulatorBoard);
+
+                    grid.addRoad(road1);
+                    grid.addRoad(road2);
+                    grid.addRoad(road4);
+                    grid.addRoad(intersection1);
+                    grid.setIntersectionNextRoad(intersection1,road2,road4,null,road1);
+                    grid.setNextRoad(road1,intersection1,null);
+                    grid.setNextRoad(road2,null,intersection1);
+                    grid.setNextRoad(road4,intersection1,null);
+
+                    roadArray.add(road1);
+                    roadArray.add(road2);
+                    roadArray.add(road4);
+                }
+            }
 
             if (component.getClass() == FourWay.class) {
                 FourWay fourWay = (FourWay) component;
@@ -90,7 +182,7 @@ public class GridLayouts {
                 road3.setTrafficLight( new TrafficLight(0,"end",1,updateRate));
                 Road road4 = new Road(2,startX+1+3,startY+1+2,"vertical", false,simulatorBoard);
                 road4.setTrafficLight( new TrafficLight(road4.getRoadArray()[0].length -1,"start",2,updateRate));
-                Intersection intersection1 = new Intersection(1,startX+1,startY+1+2,"straight", false,simulatorBoard);
+                Intersection intersection1 = new Intersection(1,startX+1,startY+1+2,"fourway", false,simulatorBoard);
 
                 grid.addRoad(road1);
                 grid.addRoad(road2);
@@ -270,6 +362,19 @@ public class GridLayouts {
                 straightList.add(straightObj);
             }
 
+            if (component.getClass() == ThreeWay.class) {
+                ThreeWay threeWayComponent = (ThreeWay) component;
+                int xStart = threeWayComponent.getxPos()+1;
+                int yStart = threeWayComponent.getyPos()+1;
+                String direction = threeWayComponent.getDirection();
+
+                JSONObject threeWayObj = new JSONObject();
+                threeWayObj.put("x", xStart);
+                threeWayObj.put("y", yStart);
+                threeWayObj.put("direction", direction);
+                threeWayList.add(threeWayObj);
+            }
+
             if (component.getClass() == FourWay.class) {
                 FourWay fourWayComponent = (FourWay) component;
                 int xStart = fourWayComponent.getxPos();
@@ -371,21 +476,35 @@ public class GridLayouts {
 
                 }
             }
-            //TODO
-//            JSONArray threeWayArray = (JSONArray) road.get("threeway");
-//            if (threeWayArray != null) {
-//                for (Object threeWayObj: threeWayArray) {
-//                    JSONObject threeWayRoadObj = (JSONObject) threeWayObj;
-//                    int xStart = (int) threeWayRoadObj.get("x");
-//                    int yStart = (int) threeWayRoadObj.get("y");
-//                    String direction = (String) threeWayRoadObj.get("direction");
-//                }
-//            }
+
+            JSONArray threeWayArray = (JSONArray) road.get("threeway");
+            if (threeWayArray != null) {
+                for (Object threeWayObj: threeWayArray) {
+                    JSONObject threeWayRoadObj = (JSONObject) threeWayObj;
+                    long xStartLong = (long) threeWayRoadObj.get("x");
+                    int xStart = (int) xStartLong;
+                    long yStartLong = (long) threeWayRoadObj.get("y");
+                    int yStart = (int) yStartLong;
+                    String direction = (String) threeWayRoadObj.get("direction");
+                    ThreeWay threeWay = new ThreeWay(xStart,yStart,direction);
+                    if (option == 1) {
+                        roadComponentArrayList1.add(threeWay);
+                    } else if (option == 2) {
+                        roadComponentArrayList2.add(threeWay);
+                    } else if (option == 3) {
+                        roadComponentArrayList3.add(threeWay);
+                    } else if (option == 4) {
+                        roadComponentArrayList4.add(threeWay);
+                    } else if (option == 5) {
+                        roadComponentArrayList5.add(threeWay);
+                    }
+                }
+            }
+
             JSONArray fourWayArray = (JSONArray) road.get("fourway");
             if (fourWayArray != null) {
                 for (Object fourWayObj: fourWayArray) {
                     JSONObject fourWayRoadObj = (JSONObject) fourWayObj;
-//                            System.out.println(fourWayRoadObj.get("x"));
                     long xStartLong = (long) fourWayRoadObj.get("x");
                     int xStart = (int) xStartLong;
                     long yStartLong = (long) fourWayRoadObj.get("y");
