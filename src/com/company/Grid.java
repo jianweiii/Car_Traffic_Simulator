@@ -32,7 +32,10 @@ public class Grid extends JPanel {
         Random rand = new Random();
         int chosenLocation = rand.nextInt(spawnPoints.size());
         Road chosenRoad = spawnPoints.get(chosenLocation);
-        chosenRoad.setVehicle(new Vehicle("Car",1),chosenRoad.getSpawnLocation());
+        String[] vehicleType = {"Car", "Bus", "Motorbike"};
+        Random randVeh = new Random();
+        int randomVehChoice = randVeh.nextInt(vehicleType.length);
+        chosenRoad.setVehicle(new Vehicle(vehicleType[randomVehChoice],1),chosenRoad.getSpawnLocation());
 
     }
 
@@ -51,47 +54,116 @@ public class Grid extends JPanel {
         for (int row=0;row<gridMap.length;row++) {
             // column
             for (int col=0;col<gridMap[row].length;col++) {
-                if (vehicleGridMap[row][col] != null) {
-                    // car
-                    graphicsSettings.setColor(Color.BLACK);
-                } else if (gridMap[row][col] == 0) {
+
+                int x = (col*panelWidth) / gridMap.length;
+                int y = (row*panelHeight) / gridMap[row].length;
+
+                if (gridMap[row][col] == 0) {
                     // non-road
-                    graphicsSettings.setColor(Color.GREEN);
+                    graphicsSettings.setColor(new Color(0, 230, 77));
+                    graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
                 } else if (gridMap[row][col] == 99) {
                     // Green traffic light
                     Color trafficGreen = new Color(41, 140, 38);
                     graphicsSettings.setColor(trafficGreen);
+                    graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
                 } else if (gridMap[row][col] == 95) {
                     // Red traffic light
 //                    Color trafficGreen = new Color(41, 140, 38);
                     graphicsSettings.setColor(Color.RED);
+                    graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
                 } else if (gridMap[row][col] == 11) {
                     // horizontal right
                     graphicsSettings.setColor(Color.GRAY);
 //                    System.out.print("|->-|");
+                    graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
+                    graphicsSettings.setColor(Color.BLACK);
+                    graphicsSettings.fillRect(x,y,xWidth+1,1);
+                    graphicsSettings.setColor(Color.WHITE);
+                    graphicsSettings.fillRect(x,y+yHeight,xWidth+1,1);
                 } else if (gridMap[row][col] == 12) {
                     // horizontal left
 //                    System.out.print("|-<-|");
                     graphicsSettings.setColor(Color.GRAY);
+                    graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
+                    graphicsSettings.setColor(Color.BLACK);
+                    graphicsSettings.fillRect(x,y+yHeight,xWidth+1,1);
                 } else if (gridMap[row][col] == 21) {
                     // vertical up
 //                    System.out.print("| ^ |");
                     graphicsSettings.setColor(Color.GRAY);
+                    graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
+                    graphicsSettings.setColor(Color.BLACK);
+                    graphicsSettings.fillRect(x,y,1,yHeight+1);
+                    graphicsSettings.setColor(Color.WHITE);
+                    graphicsSettings.fillRect(x+xWidth-1,y,1,yHeight+1);
                 } else if (gridMap[row][col] == 22) {
                     // vertical down
 //                    System.out.print("| v |");
                     graphicsSettings.setColor(Color.GRAY);
+                    graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
+                    graphicsSettings.setColor(Color.BLACK);
+                    graphicsSettings.fillRect(x+xWidth-1,y,1,yHeight+1);
                 } else {
                     // intersection
                     graphicsSettings.setColor(Color.GRAY);
 //                    System.out.print("|-X-|");
+                    graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
                 }
-                int x = (col*panelWidth) / gridMap.length;
-                int y = (row*panelHeight) / gridMap[row].length;
 
-                // TODO: CHAGNE BACK
+
+
+//                 TODO: CHAGNE BACK
 //                graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
-                graphicsSettings.fillRect(x-1,y-1,xWidth-1,yHeight-1);
+//                graphicsSettings.fillRect(x-1,y-1,xWidth-1,yHeight-1);
+
+                if (vehicleGridMap[row][col] != null) {
+
+                    switch (vehicleGridMap[row][col].getType()) {
+                        // If Car
+                        case "Car":
+                            graphicsSettings.setColor(new Color(230, 230, 0));
+                            graphicsSettings.fillRect(x, y, xWidth + 1, yHeight + 1);
+                            break;
+                        case "Bus":
+                            if (gridMap[row][col] == 11 || gridMap[row][col] == 12) {
+                                // horizontal right
+                                graphicsSettings.setColor(new Color(0, 64, 255));
+                                graphicsSettings.fillRect(x-10, y, xWidth + 1+10, yHeight + 1);
+//                          System.out.print("|->-|");
+                            } else if (gridMap[row][col] == 21 || gridMap[row][col] == 22) {
+                                // horizontal right
+                                graphicsSettings.setColor(new Color(0, 64, 255));
+                                graphicsSettings.fillRect(x, y-10, xWidth + 1, yHeight + 1+10);
+//                          System.out.print("|->-|");
+                            } else {
+                                graphicsSettings.setColor(new Color(0, 64, 255));
+                                graphicsSettings.fillRect(x, y, xWidth + 1, yHeight + 1);
+                            }
+                            break;
+                        case "Motorbike":
+                            if (gridMap[row][col] == 11 || gridMap[row][col] == 12) {
+                                // horizontal right
+                                graphicsSettings.setColor(new Color(230, 92, 0));
+                                graphicsSettings.fillRect(x+5, y, xWidth + 1-5, yHeight + 1);
+//                          System.out.print("|->-|");
+                            } else if (gridMap[row][col] == 21 || gridMap[row][col] == 22) {
+                                // horizontal right
+                                graphicsSettings.setColor(new Color(230, 92, 0));
+                                graphicsSettings.fillRect(x, y+5, xWidth + 1, yHeight + 1-5);
+//                          System.out.print("|->-|");
+                            }  else {
+                                graphicsSettings.setColor(new Color(230, 92, 0));
+                                graphicsSettings.fillRect(x, y, xWidth + 1, yHeight + 1);
+                            }
+                            break;
+                        default:
+                            graphicsSettings.setColor(Color.BLACK);
+                            graphicsSettings.fillRect(x, y, xWidth + 1, yHeight + 1);
+                            break;
+                    }
+
+                }
             }
 
         }
