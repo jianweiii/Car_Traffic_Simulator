@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Grid extends JPanel {
-    final private static int indvGridSize = 20;
-
     private int gridHeight;
     private int gridWidth;
     private int[][] gridMap;
@@ -112,10 +110,7 @@ public class Grid extends JPanel {
                 }
 
 
-
-//                 TODO: CHAGNE BACK
-//                graphicsSettings.fillRect(x,y,xWidth+1,yHeight+1);
-//                graphicsSettings.fillRect(x-1,y-1,xWidth-1,yHeight-1);
+                
 
                 if (vehicleGridMap[row][col] != null) {
 
@@ -169,73 +164,7 @@ public class Grid extends JPanel {
         }
 
         moveVehicles();
-
     }
-
-    public void displayGrid() {
-        for (int[] roads : gridMap) {
-            for (int road: roads) {
-                if (road == 0) {
-                    System.out.print("|   |");
-                } else if (road == 11) {
-                    System.out.print("|---|");
-                } else if (road == 12){
-                    System.out.print("|-|-|");
-                } else {
-                    System.out.print("|-X-|");
-                }
-
-            }
-            System.out.println();
-
-        }
-    }
-
-    public void displayVehicleGrid() {
-        roadList.get(0).displayRoad();
-        System.out.print("-X-");
-        roadList.get(1).displayRoad();
-        System.out.println();
-        for (Vehicle[] vehicleRow : vehicleGridMap) {
-            for (Vehicle vehicle: vehicleRow) {
-                if (vehicle == null) {
-                    System.out.print("|   |");
-                } else {
-                    System.out.print("|-1-|");
-                }
-
-            }
-            System.out.println();
-
-        }
-    }
-
-    public void displayAll() {
-        for (int i=0;i<gridMap.length;i++) {
-            for (int j=0;j<gridMap[i].length;j++) {
-                if (vehicleGridMap[i][j] != null) {
-                    System.out.print("| C |");
-                } else if (gridMap[i][j] == 0) {
-                    System.out.print("|   |");
-                } else if (gridMap[i][j] == 11) {
-                    System.out.print("|->-|");
-                } else if (gridMap[i][j] == 12) {
-                    System.out.print("|-<-|");
-                } else if (gridMap[i][j] == 21) {
-                    System.out.print("| ^ |");
-                } else if (gridMap[i][j] == 22) {
-                    System.out.print("| v |");
-                } else {
-                    System.out.print("|-X-|");
-                }
-            }
-            System.out.println();
-        }
-    }
-
-//    public void addTrafficLight() {
-//        roadList.get(0).setTrafficLight(new TrafficLight(roadList.get(0).getRoadLength()-1));
-//    }
 
 
     public void addRoad(Road road) {
@@ -268,16 +197,6 @@ public class Grid extends JPanel {
                 gridMap[startX][startY-1+i] = 3;
             }
         }
-//        else if (direction.equals("straight")) {
-//            //Straight intersection
-//            gridMap[startX-1][startY-1] = 2;
-//        } else if (direction.equals("3-way")) {
-//            //3-way intersection
-//            gridMap[startX-1][startY-1] = 3;
-//        } else if (direction.equals("4-way")) {
-//            //4-way intersection
-//            gridMap[startX-1][startY-1] = 4;
-//        }
     }
 
     public void setNextRoad(Road curRoad, Road roadStart, Road roadEnd) {
@@ -383,7 +302,7 @@ public class Grid extends JPanel {
         simulatorBoard.updateTrafficLightStatus();
     }
 
-    public void moveVehicles() {
+    private void moveVehicles() {
 //        System.out.print("road1: " + roadList.get(0).getTrafficLightList().get(0).getTrafficLightColour() + ", road2: " + roadList.get(1).getTrafficLightList().get(0).getTrafficLightColour() + ", ");
 //        System.out.print("road3: " + roadList.get(2).getTrafficLightList().get(0).getTrafficLightColour() + ", road4: " + roadList.get(3).getTrafficLightList().get(0).getTrafficLightColour());
         for (Road road: roadList) {

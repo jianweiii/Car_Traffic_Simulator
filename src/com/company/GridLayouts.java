@@ -44,37 +44,20 @@ public class GridLayouts {
                 int startX = straight.getxPos();
                 int startY = straight.getyPos();
                 String direction = straight.getDirection();
-//                System.out.println(startX);
-//                System.out.println(startY);
                 if ((startY == 0 && direction.equals("horizontal")) || (startX == 49 && direction.equals("vertical"))) {
-//                    System.out.println("starty:" + startY);
-//                    System.out.println("startx:" + startX);
                     Road road = new Road(roadLength,startX+1,startY+1,direction, true,simulatorBoard);
-//                    System.out.println(String.format("sx:%d, sy:%d, ex:%d. ey:%d",
-//                            road.getxCoord(),road.getyCoord(),road.getxRTpos(),road.getyRTpos()));
                     road.setSpawnLocation("start");
                     roadArray.add(road);
                     grid.addRoad(road);
-//                    System.out.println(road);
-
                 } else if ((startX+1-roadLength == 0 && direction.equals("vertical")) || (startY+roadLength-1 == 49 && direction.equals("horizontal"))) {
-//                    System.out.println("starty:" + startY);
-//                    System.out.println("startx:" + startX);
                     Road road = new Road(roadLength,startX+1,startY+1,direction, true,simulatorBoard);
-//                    System.out.println(String.format("sx:%d, sy:%d, ex:%d. ey:%d",
-//                            road.getxCoord(),road.getyCoord(),road.getxRTpos(),road.getyRTpos()));
                     road.setSpawnLocation("end");
                     roadArray.add(road);
                     grid.addRoad(road);
-//                    System.out.println(road);
-
                 } else {
                     Road road = new Road(roadLength,startX+1,startY+1,direction, false,simulatorBoard);
-//                    System.out.println(String.format("sx:%d, sy:%d, ex:%d. ey:%d",
-//                            road.getxCoord(),road.getyCoord(),road.getxRTpos(),road.getyRTpos()));
                     roadArray.add(road);
                     grid.addRoad(road);
-//                    System.out.println(road);
                 }
             }
             if (component.getClass() == ThreeWay.class) {
@@ -195,33 +178,10 @@ public class GridLayouts {
                 grid.setNextRoad(road3,null,intersection1);
                 grid.setNextRoad(road4,intersection1,null);
 
-//                System.out.println("intersection");
-//                System.out.println(intersection1);
-
                 roadArray.add(road1);
                 roadArray.add(road2);
                 roadArray.add(road3);
                 roadArray.add(road4);
-//                System.out.println("road2");
-//                System.out.println(road2);
-//                intersectionArray.add(road1);
-//                intersectionArray.add(road2);
-//                intersectionArray.add(road3);
-//                intersectionArray.add(road4);
-//                multiRoadArray.add(intersectionArray);
-//                intersectionArray.add(intersection1);
-//
-//                System.out.println(String.format("sx:%d, sy:%d, ex:%d. ey:%d",
-//                        road1.getxCoord(),road1.getyCoord(),road1.getxRTpos(),road1.getyRTpos()));
-//                System.out.println(String.format("sx:%d, sy:%d, ex:%d. ey:%d",
-//                        road2.getxCoord(),road2.getyCoord(),road2.getxRTpos(),road2.getyRTpos()));
-//                System.out.println(String.format("sx:%d, sy:%d, ex:%d. ey:%d",
-//                        road3.getxCoord(),road3.getyCoord(),road3.getxRTpos(),road3.getyRTpos()));
-//                System.out.println(String.format("sx:%d, sy:%d, ex:%d. ey:%d",
-//                        road4.getxCoord(),road4.getyCoord(),road4.getxRTpos(),road4.getyRTpos()));
-
-
-
             }
         }
 
@@ -238,85 +198,29 @@ public class GridLayouts {
                     } else {
                         if (road1.getDirection().equals("horizontal") && road2.getDirection().equals("horizontal")) {
                             // horizontal
-//                            System.out.println(String.format("r1ex: %d, r2sx: %d, r1ey: %d, r2sy: %d", road1.getxRTpos(),road2.getxCoord(),road1.getyRTpos(), road2.getyCoord()));
                             if (road1.getxRTpos() == road2.getxCoord() && road1.getyRTpos() == road2.getyCoord()) {
-//                                System.out.println("horizontal-1");
-//                                System.out.println(String.format("r1ex: %d, r2sx: %d, r1ey: %d, r2sy: %d", road1.getxRTpos(),road2.getxCoord(),road1.getyRTpos(), road2.getyCoord()));
                                 road1.setNextStartRoad(road2);
-//                                System.out.println("road1");
-//                                System.out.println(road1);
-//                                System.out.println("road2");
-//                                System.out.println(road2);
                             }
                             if (road2.getxCoord() == road1.getxRTpos() && road2.getyCoord() == road1.getyRTpos())
                             {
-//                                System.out.println("horizontal-2");
-//                                System.out.println(String.format("r1sx: %d, r2ex: %d, r1sy: %d, r2ey: %d", road1.getxCoord(),road2.getxRTpos(),road1.getyCoord(), road2.getyRTpos()));
                                 road2.setNextEndRoad(road1);
-//                                System.out.println("road1");
-//                                System.out.println(road1);
-//                                System.out.println("road2");
-//                                System.out.println(road2);
                             }
                         }
                         if (road1.getDirection().equals("vertical") && road2.getDirection().equals("vertical")) {
                             // vertical
                             if (road1.getxRTpos() == road2.getxCoord()+1 && road1.getyRTpos() == road2.getyCoord()) {
-//                                System.out.println("vertical1");
-//                                System.out.println(String.format("r1ex: %d, r2sx: %d, r1ey: %d, r2sy: %d", road1.getxRTpos(),road2.getxCoord(),road1.getyRTpos(), road2.getyCoord()));
                                 road1.setNextStartRoad(road2);
-//                                System.out.println(road1);
-//                                System.out.println(road2);
-//                                System.out.println("current");
-//                                System.out.println(road1);
-//                                System.out.println("nextStart");
-//                                System.out.println(road1.getNextStartRoad());
                             }
                             if (road1.getxCoord()+1 == road2.getxRTpos() && road1.getyCoord() == road2.getyRTpos())
                             {
-//                                System.out.println("vertical2");
-//                                System.out.println(String.format("r1sx: %d, r2ex: %d, r1sy: %d, r2ey: %d", road1.getxCoord(),road2.getxRTpos(),road1.getyCoord(), road2.getyRTpos()));
                                 road1.setNextEndRoad(road2);
-//                                System.out.println(road1);
-//                                System.out.println(road2);
-//                                System.out.println("current");
-//                                System.out.println(road1);
-//                                System.out.println("nextEnd");
-//                                System.out.println(road1.getNextEndRoad());
-
-
                             }
                         }
                     }
-
-
-
                 }
             }
 
-
-
-
-//            // for intersection checking
-//            for (ArrayList<Road> intersection: multiRoadArray) {
-//                int startX = intersection.get(0).getxCoord();
-//                int startY = intersection.get(0).getyCoord();
-//
-//
-//
-//            }
         }
-
-//        for (Intersection intersection: intersectionArray) {
-//            System.out.println("north");
-//            System.out.println(intersection.getNextNorthRoad());
-//            System.out.println("sout");
-//            System.out.println(intersection.getNextSouthRoad());
-//            System.out.println("east");
-//            System.out.println(intersection.getNextEastRoad());
-//            System.out.println("west");
-//            System.out.println(intersection.getNextWestRoad());
-//        }
 
         // Overwrite grid layout
         gridlayouts[option-1] = grid;

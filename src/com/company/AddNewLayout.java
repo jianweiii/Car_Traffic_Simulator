@@ -37,8 +37,7 @@ public class AddNewLayout extends JPanel {
             if (component.getClass() == Straight.class) {
                 updateStraightComponent(component);
             }
-
-            // TODO: CHECK WHY VEHICLES ARE GOING MISSING IN JUNCTION
+            
             if (component.getClass() == ThreeWay.class) {
                 ThreeWay threeWay = (ThreeWay) component;
                 int xStartThreeWay = threeWay.getxPos();
